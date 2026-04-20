@@ -9,7 +9,7 @@ const posts = [
         title: "Top 10 Best Financial Website Designs [March 2026 Update]",
         excerpt:
             "Key Takeaways The best financial website designs use an intuitive flow and a stellar UI/UX experience to capture site visitors' business. Digital payments reached $6.6 trillion [...]",
-        image: "/images/blog/financial-website.webp",
+        image: "/images/Blog/financial-website.webp",
         href: "#",
     },
     {
@@ -18,7 +18,7 @@ const posts = [
         title: "Best Web Design Companies in 2026 [March 2026 Update]",
         excerpt:
             "Whether you're building a new website or revamping an existing one, partnering with a top web design company is crucial to ensuring a site that is [...]",
-        image: "/images/blog/web-design-companies.webp",
+        image: "/images/Blog/web-design-companies.webp",
         href: "#",
     },
     {
@@ -27,7 +27,7 @@ const posts = [
         title: "TOP Web Development Companies in 2026 [March 2026 Update]",
         excerpt:
             "To ensure a fair and objective evaluation, we analyzed numerous web design agencies based on several criteria. These include their portfolio of work, client testimonials, industry [...]",
-        image: "/images/blog/web-development.webp",
+        image: "/images/Blog/web-development.webp",
         href: "#",
     },
 ];
