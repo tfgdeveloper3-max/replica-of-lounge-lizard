@@ -7,6 +7,12 @@ import StickyProposal from "@/components/Stickyproposal";
 import FeaturedWork from "@/components/sections/Featuredwork";
 import ClientsSection from "@/components/sections/Clientssection";
 import Marketingsection from "@/components/sections/Marketingsection";
+import Brandingsection from "@/components/sections/Brandingsection";
+import Faqsection from "@/components/sections/Faqsection";
+import Blogsection from "@/components/sections/Blogsection";
+import Contactsection from "@/components/sections/Contactsection";
+import Newslettersection from "@/components/sections/Newslettersection";
+import Footer from "@/components/sections/Footer";
 
 export default function Home() {
   const [isDay, setIsDay] = useState(true);
@@ -24,6 +30,18 @@ export default function Home() {
       <ClientsSection />
 
       <Marketingsection />
+
+      <Brandingsection />
+
+      <Faqsection />
+
+      <Blogsection />
+
+      <Contactsection />
+
+      <Newslettersection />
+
+      <Footer />
 
       <StickyProposal />
     </main>
