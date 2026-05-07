@@ -14,6 +14,7 @@ import Contactsection from "@/components/sections/Contactsection";
 import Newslettersection from "@/components/sections/Newslettersection";
 import Footer from "@/components/sections/Footer";
 
+
 export default function Home() {
   const [isDay, setIsDay] = useState(true);
 

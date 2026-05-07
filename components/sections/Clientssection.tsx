@@ -1,22 +1,20 @@
 "use client";
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 const clients = [
     { name: "Isuzu", logo: "/images/Clients/ISUZU.webp" },
     { name: "Canon", logo: "/images/Clients/Canon.webp" },
     { name: "Random House", logo: "/images/Clients/Random-House.webp" },
-    { name: "Daiwa Capital Markets", logo: "/images/Clients/Daiwa-Capital-Markets.webp" },
+    { name: "Daiwa Capital", logo: "/images/Clients/Daiwa-Capital-Markets.webp" },
     { name: "Gold Dust West", logo: "/images/Clients/Gold-Dust-West.webp" },
     { name: "Honeywell", logo: "/images/Clients/Honey-Well.webp" },
     { name: "Dept of Defense", logo: "/images/Clients/D-O-D.webp" },
-    { name: "The Broadway League", logo: "/images/Clients/The-Broadway-League.webp" },
+    { name: "Broadway League", logo: "/images/Clients/The-Broadway-League.webp" },
     { name: "MPA", logo: "/images/Clients/MPA.webp" },
     { name: "Mountaire", logo: "/images/Clients/Mountaire.webp" },
-    { name: "AE", logo: "/images/Clients/AE-Network.webp" },
+    { name: "A&E Network", logo: "/images/Clients/AE-Network.webp" },
     { name: "Blue Owl", logo: "/images/Clients/Blue-Owl.webp" },
     { name: "Circa", logo: "/images/Clients/Circa.webp" },
     { name: "Loop-LOC", logo: "/images/Clients/Loop-LOC.webp" },
@@ -25,138 +23,137 @@ const clients = [
     { name: "NYU Langone", logo: "/images/Clients/NYU.webp" },
     { name: "TDK", logo: "/images/Clients/TDK.webp" },
     { name: "Watts", logo: "/images/Clients/Watts.webp" },
-    { name: "Credit Suissie", logo: "/images/Clients/Credit-Sussie.webp" },
+    { name: "Credit Suisse", logo: "/images/Clients/Credit-Sussie.webp" },
 ];
 
-const TOTAL = clients.length; // 20
-const VISIBLE = 10;             // 5 cols × 2 rows always visible
-const COLS = 5;
+const row1 = clients.slice(0, 10);
+const row2 = clients.slice(10, 20);
 
-export default function ClientsSection() {
-    const [offset, setOffset] = useState(0);
-    const trackRef = useRef<HTMLDivElement>(null);
-
-    // We render TOTAL + VISIBLE cards in a horizontal track
-    // offset moves 1 card at a time
-    const shift = (dir: number) => {
-        setOffset((prev) => (prev + dir + TOTAL) % TOTAL);
-    };
-
-    const goToStep = (step: number) => {
-        setOffset((step) % TOTAL);
-    };
-
-    // Build infinite list: repeat clients twice so we always have enough
-    const infinite = [...clients, ...clients, ...clients];
-
-    // Get cards starting from offset, enough for 2 rows × 5 = 10
-    const row1 = Array.from({ length: COLS }, (_, i) => infinite[(offset + i) % TOTAL]);
-    const row2 = Array.from({ length: COLS }, (_, i) => infinite[(offset + COLS + i) % TOTAL]);
-
-    const currentDot = offset % TOTAL;
-
+function MarqueeRow({ items, reverse = false }: { items: typeof clients; reverse?: boolean }) {
+    const tripled = [...items, ...items, ...items];
     return (
-        <section
-            className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden py-20"
-            style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
-        >
-            {/* Background */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('/images/Client-bg.jpeg')" }}
-            />
-            <div className="absolute inset-0 bg-black/55" />
-
-            {/* Content */}
-            <div className="relative z-10 w-full max-w-[1200px] px-6 flex flex-col items-center gap-8">
-
-                {/* Heading */}
-                <div className="text-center">
-                    <h2
-                        className="font-black text-white uppercase leading-none mb-4"
-                        style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+        <div className="overflow-hidden w-full">
+            <motion.div
+                className="flex gap-4"
+                animate={{ x: reverse ? ["0%", "33.33%"] : ["0%", "-33.33%"] }}
+                transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
+                style={{ width: "max-content" }}
+            >
+                {tripled.map((c, i) => (
+                    <div
+                        key={`${c.name}-${i}`}
+                        className="shrink-0 bg-white rounded-2xl flex items-center justify-center p-5 group hover:shadow-md transition-shadow duration-300"
+                        style={{ width: "156px", height: "88px" }}
                     >
-                        OUR CLIENTS
-                    </h2>
-                    <p className="text-white/80 font-medium" style={{ fontSize: "clamp(1rem, 1.5vw, 1.3rem)" }}>
-                        From Boutique to Enterprise, We Drive Results
-                    </p>
-                </div>
-
-                {/* Slider */}
-                <div className="relative w-full flex items-center gap-4">
-
-                    {/* Prev */}
-                    <motion.button
-                        onClick={() => shift(-1)}
-                        whileHover={{ scale: 1.08 }}
-                        whileTap={{ scale: 0.92 }}
-                        className="shrink-0 w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-gray-700 shadow-lg hover:bg-white transition-colors"
-                    >
-                        <ChevronLeft size={22} />
-                    </motion.button>
-
-                    {/* Grid — 2 rows, each row slides 1 card at a time */}
-                    <div className="flex-1 overflow-hidden">
-                        {/* Row 1 */}
-                        <div className="grid grid-cols-5 gap-4 mb-4">
-                            {row1.map((client, i) => (
-                                <LogoCard key={`r1-${offset}-${i}`} client={client} />
-                            ))}
-                        </div>
-                        {/* Row 2 */}
-                        <div className="grid grid-cols-5 gap-4">
-                            {row2.map((client, i) => (
-                                <LogoCard key={`r2-${offset}-${i}`} client={client} />
-                            ))}
+                        <div className="relative w-full h-full">
+                            <Image
+                                src={c.logo}
+                                alt={c.name}
+                                fill
+                                className="object-contain p-1 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-400"
+                                sizes="156px"
+                            />
                         </div>
                     </div>
-
-                    {/* Next */}
-                    <motion.button
-                        onClick={() => shift(1)}
-                        whileHover={{ scale: 1.08 }}
-                        whileTap={{ scale: 0.92 }}
-                        className="shrink-0 w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-gray-700 shadow-lg hover:bg-white transition-colors"
-                    >
-                        <ChevronRight size={22} />
-                    </motion.button>
-                </div>
-
-                {/* Dots — 20 steps */}
-                <div className="flex items-center gap-2 mt-2">
-                    {Array.from({ length: TOTAL }).map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => goToStep(i)}
-                            className={`rounded-full transition-all duration-300 ${i === currentDot
-                                    ? "bg-[#e8391d] w-5 h-3"
-                                    : "bg-white/40 hover:bg-white/70 w-3 h-3"
-                                }`}
-                        />
-                    ))}
-                </div>
-            </div>
-        </section>
+                ))}
+            </motion.div>
+        </div>
     );
 }
 
-function LogoCard({ client }: { client: { name: string; logo: string } }) {
+export default function ClientsSection() {
     return (
-        <motion.div
-            layout
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="bg-white rounded-2xl flex items-center justify-center p-5 aspect-[4/3]"
+        <section
+            className="relative w-full overflow-hidden py-24"
+            style={{ fontFamily: "'Raleway', Arial, sans-serif", background: "#0d0d0d" }}
         >
-            <div className="relative w-full h-full">
-                <Image
-                    src={client.logo}
-                    alt={client.name}
-                    fill
-                    className="object-contain p-2"
-                    sizes="(max-width: 768px) 40vw, 18vw"
-                />
+            {/* BG image */}
+            <div className="absolute inset-0">
+                <Image src="/images/Client-bg.jpeg" alt="" fill className="object-cover opacity-[0.08]" />
             </div>
-        </motion.div>
+
+            {/* top / bottom accent lines */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#e8391d]/50 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#e8391d]/50 to-transparent" />
+
+            <div className="relative z-10">
+
+                {/* ── Header ── */}
+                <div className="text-center px-8 mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="flex items-center justify-center gap-3 mb-5"
+                    >
+                        <span className="w-8 h-px bg-[#e8391d]" />
+                        <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Trusted By Authors Worldwide</span>
+                        <span className="w-8 h-px bg-[#e8391d]" />
+                    </motion.div>
+
+                    <motion.h2
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="font-black text-white uppercase leading-none mb-5"
+                        style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}
+                    >
+                        OUR <span className="text-[#e8391d]">CLIENTS</span>
+                    </motion.h2>
+
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                        className="text-white/45 font-medium max-w-lg mx-auto"
+                        style={{ fontSize: "clamp(0.88rem, 1.2vw, 1.05rem)" }}
+                    >
+                        From debut authors to global brands — we've helped stories reach readers everywhere.
+                    </motion.p>
+                </div>
+
+                {/* ── Marquee rows ── */}
+                <div className="flex flex-col gap-4 mb-16">
+                    <MarqueeRow items={row1} />
+                    <MarqueeRow items={row2} reverse />
+                </div>
+
+                {/* ── Stats bar ── */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="flex justify-center px-8"
+                >
+                    <div className="flex flex-wrap items-stretch gap-0 bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                        {[
+                            ["500+", "Books Published"],
+                            ["300+", "Happy Authors"],
+                            ["12+", "Years of Excellence"],
+                            ["98%", "5-Star Satisfaction"],
+                        ].map(([num, label], i, arr) => (
+                            <div
+                                key={label}
+                                className={`flex flex-col items-center justify-center px-10 py-7 ${i < arr.length - 1 ? "border-r border-white/10" : ""}`}
+                            >
+                                <p className="font-black text-white text-3xl leading-none">{num}</p>
+                                <p className="text-white/35 text-[10px] uppercase tracking-widest font-bold mt-1.5">{label}</p>
+                            </div>
+                        ))}
+                        <div className="flex items-center px-8 border-l border-white/10">
+                            <motion.a
+                                href="#"
+                                whileHover={{ backgroundColor: "#c0271a" }}
+                                className="inline-flex items-center gap-2 bg-[#e8391d] text-white font-black text-[11px] uppercase tracking-widest px-6 py-3 rounded-xl transition-colors"
+                            >
+                                Get Started <ArrowRight size={13} />
+                            </motion.a>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        </section>
     );
 }

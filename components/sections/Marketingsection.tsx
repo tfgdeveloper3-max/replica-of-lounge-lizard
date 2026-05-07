@@ -2,189 +2,164 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { ArrowRight, TrendingUp } from "lucide-react";
 
 const stats = [
-    {
-        id: 1,
-        percent: "396%",
-        label: "RETURN ON AD SPEND",
-        client: "Peter MAX",
-        image: "/images/the-american-camp.webp",
-    },
-    {
-        id: 2,
-        percent: "187%",
-        label: "INCREASE IN ORGANIC TRAFFIC",
-        client: "Evolve Bank",
-        image: "/images/mind-games-fragrance.webp",
-    },
-    {
-        id: 3,
-        percent: "93%",
-        label: "ENGAGEMENT RATE",
-        client: "Mind Game Fragrance",
-        image: "/images/winspire.webp",
-    },
-    {
-        id: 4,
-        percent: "104%",
-        label: "INCREASE IN HIRING EVENTS",
-        client: "ACA NY & NJ",
-        image: "/images/gold-dust-west-casinos.webp",
-    },
-    {
-        id: 5,
-        percent: "52%",
-        label: "INCREASE TRAFFIC IN MEXICO",
-        client: "Lantech",
-        image: "/images/Andersen-global.webp",
-    },
-    {
-        id: 6,
-        percent: "97",
-        label: "GOOGLE PAGESPEED SCORE",
-        client: "Axium Packaging",
-        image: "/images/colorado-rafting.webp",
-    },
-    {
-        id: 7,
-        percent: "87%",
-        label: "INCREASE OF USERS",
-        client: "Imagine Software",
-        image: "/images/imagine-software.webp",
-    },
+    { id: 1, percent: "500+", label: "Books Successfully Published", client: "Across All Genres", image: "/images/the-american-camp.webp" },
+    { id: 2, percent: "98%", label: "5-Star Client Satisfaction Rate", client: "Verified Author Reviews", image: "/images/mind-games-fragrance.webp" },
+    { id: 3, percent: "30+", label: "Global Distribution Platforms", client: "Amazon, B&N, Kobo & More", image: "/images/winspire.webp" },
+    { id: 4, percent: "2,400+", label: "Copies Sold — Single Title", client: "Mystery Thriller Author", image: "/images/gold-dust-west-casinos.webp" },
+    { id: 5, percent: "3x", label: "Average Sales Increase", client: "After Our Marketing Plans", image: "/images/Andersen-global.webp" },
+    { id: 6, percent: "12+", label: "Years of Publishing Excellence", client: "Est. 2012", image: "/images/colorado-rafting.webp" },
+    { id: 7, percent: "300+", label: "Happy Authors Served", client: "First-Time to Bestsellers", image: "/images/imagine-software.webp" },
 ];
 
 export default function MarketingSection() {
     const [current, setCurrent] = useState(0);
 
-    const goTo = (i: number) => setCurrent(i);
-
-    // Auto-slide every 3.5s
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setCurrent((prev) => (prev + 1) % stats.length);
-        }, 3500);
-        return () => clearTimeout(timer);
+        const t = setTimeout(() => setCurrent((p) => (p + 1) % stats.length), 4000);
+        return () => clearTimeout(t);
     }, [current]);
 
-    const stat = stats[current];
+    const s = stats[current];
 
     return (
         <section
-            className="relative w-full min-h-screen flex items-center overflow-hidden"
-            style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
+            className="relative w-full min-h-screen overflow-hidden"
+            style={{ fontFamily: "'Raleway', Arial, sans-serif", background: "#0d0d0d" }}
         >
-            {/* Background */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('/images/Marketing-bg.webp')" }}
-            />
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/20" />
+            {/* BG image */}
+            <div className="absolute inset-0">
+                <Image src="/images/Marketing-bg.webp" alt="" fill className="object-cover opacity-10" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d]/95 via-[#0d0d0d]/80 to-[#0d0d0d]/60" />
+            </div>
 
-            {/* Content — all centered */}
-            <div className="relative z-10 w-full max-w-[700px] px-10 lg:px-20 py-24 flex flex-col gap-10">
+            {/* top accent */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#e8391d]" />
 
-                {/* Heading — centered */}
-                <h2
-                    className="font-black text-white uppercase leading-[1.05] text-center w-full"
-                    style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}
-                >
-                    OUR RESULTS-DRIVEN WEB
-                    DESIGN AND MARKETING
-                    CAMPAIGNS
-                </h2>
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 min-h-screen">
 
-                {/* Stat pill — centered below heading */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={stat.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                        className="relative flex items-center w-full"
-                        style={{ maxWidth: "520px", marginLeft: 0 }}
+                {/* ── LEFT: heading + big stat ── */}
+                <div className="flex flex-col justify-center px-12 lg:px-20 py-24 border-r border-white/5">
+
+                    {/* label */}
+                    <div className="flex items-center gap-3 mb-10">
+                        <span className="w-8 h-[2px] bg-[#e8391d]" />
+                        <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Our Results</span>
+                    </div>
+
+                    <h2
+                        className="font-black text-white uppercase leading-[1.0] mb-14"
+                        style={{ fontSize: "clamp(2rem, 4vw, 3.8rem)" }}
                     >
-                        {/* Pill */}
-                        <div
-                            className="relative flex items-center w-full rounded-full overflow-hidden"
-                            style={{
-                                background: "linear-gradient(135deg, #c0271a 0%, #e8391d 50%, #c0271a 100%)",
-                                minHeight: "160px",
-                            }}
+                        NUMBERS THAT<br />
+                        SPEAK FOR<br />
+                        <span className="text-[#e8391d]">THEMSELVES.</span>
+                    </h2>
+
+                    {/* Big animated stat */}
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={s.id}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                            className="mb-10"
                         >
-                            {/* Decorative circles */}
-                            <div className="absolute left-8 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-white/10" />
-                            <div className="absolute left-12 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full border-2 border-white/10" />
-                            <div className="absolute left-16 top-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-2 border-white/10" />
-
-                            {/* Stat text */}
-                            <div className="flex flex-col pl-12 pr-4 py-8 flex-1">
-                                <span
-                                    className="font-black text-white leading-none"
-                                    style={{ fontSize: "clamp(3rem, 6vw, 5.5rem)" }}
-                                >
-                                    {stat.percent}
-                                </span>
-                                <span
-                                    className="font-black text-white uppercase leading-tight mt-1"
-                                    style={{ fontSize: "clamp(0.75rem, 1.2vw, 1rem)", letterSpacing: "0.05em" }}
-                                >
-                                    {stat.label}
-                                </span>
-                            </div>
-
-                            {/* Circular client image */}
+                            {/* number */}
                             <div
-                                className="absolute top-1/2 -translate-y-1/2 rounded-full overflow-hidden border-4 border-[#c0271a] shadow-xl"
-                                style={{ width: "160px", height: "160px", right: "-10px" }}
+                                className="font-black text-[#e8391d] leading-none mb-3"
+                                style={{ fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
                             >
-                                <Image
-                                    src={stat.image}
-                                    alt={stat.client}
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center py-2 font-bold text-[13px]">
-                                    {stat.client}
-                                </div>
+                                {s.percent}
                             </div>
+                            {/* label */}
+                            <p
+                                className="font-black text-white uppercase leading-tight mb-2"
+                                style={{ fontSize: "clamp(0.95rem, 1.4vw, 1.2rem)" }}
+                            >
+                                {s.label}
+                            </p>
+                            {/* sub */}
+                            <p className="text-white/35 text-[12px] uppercase tracking-widest font-bold">
+                                — {s.client}
+                            </p>
+                        </motion.div>
+                    </AnimatePresence>
 
-                            {/* Spacer for circle */}
-                            <div style={{ width: "160px", flexShrink: 0 }} />
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
-
-                {/* Bottom row: dots + CTA — centered below pill */}
-                <div className="relative flex justify-center items-center gap-8">
-                    {/* Dots */}
-                    <div className="relative justify-center flex items-center gap-2">
+                    {/* dots */}
+                    <div className="flex items-center gap-2.5 mb-10">
                         {stats.map((_, i) => (
                             <button
                                 key={i}
-                                onClick={() => goTo(i)}
-                                className={`rounded-full transition-all duration-300 ${
-                                    i === current
-                                        ? "bg-[#e8391d] w-5 h-3"
-                                        : "bg-white/40 hover:bg-white/70 w-3 h-3"
-                                }`}
+                                onClick={() => setCurrent(i)}
+                                className={`rounded-full transition-all duration-300 ${i === current
+                                        ? "bg-[#e8391d] w-7 h-2.5"
+                                        : "bg-white/20 hover:bg-white/40 w-2.5 h-2.5"
+                                    }`}
                             />
                         ))}
                     </div>
 
-                    {/* CTA */}
                     <motion.a
                         href="#"
-                        whileHover={{ backgroundColor: "#e8391d", borderColor: "#e8391d" }}
-                        transition={{ duration: 0.2 }}
-                        className="border-2 border-white text-white font-bold uppercase tracking-widest px-8 py-4 transition-colors whitespace-nowrap"
-                        style={{ fontSize: "0.78rem" }}
+                        whileHover={{ backgroundColor: "#c0271a", gap: "14px" }}
+                        className="inline-flex items-center gap-3 bg-[#e8391d] text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] transition-all self-start"
                     >
-                        SEE ALL OUR WORK
+                        See Our Portfolio <ArrowRight size={15} />
                     </motion.a>
+                </div>
+
+                {/* ── RIGHT: stat cards grid ── */}
+                <div className="grid grid-cols-2 gap-px bg-white/5 self-stretch">
+                    {stats.map((st, i) => (
+                        <motion.button
+                            key={st.id}
+                            onClick={() => setCurrent(i)}
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                            className={`relative flex flex-col justify-end p-7 text-left overflow-hidden transition-all duration-300 ${i === current
+                                    ? "bg-[#e8391d]/15"
+                                    : "bg-[#111] hover:bg-white/4"
+                                }`}
+                            style={{ minHeight: "185px" }}
+                        >
+                            {/* bg image */}
+                            <div className="absolute inset-0 opacity-15">
+                                <Image src={st.image} alt="" fill className="object-cover" />
+                            </div>
+
+                            {/* active top bar */}
+                            {i === current && (
+                                <motion.div
+                                    layoutId="activeBar"
+                                    className="absolute top-0 left-0 right-0 h-[3px] bg-[#e8391d]"
+                                />
+                            )}
+
+                            {/* TrendingUp icon */}
+                            <div className={`relative z-10 mb-3 w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${i === current ? "bg-[#e8391d]" : "bg-white/8"}`}>
+                                <TrendingUp size={15} className={i === current ? "text-white" : "text-white/40"} />
+                            </div>
+
+                            <div className="relative z-10">
+                                <p
+                                    className="font-black leading-none mb-1 transition-colors"
+                                    style={{
+                                        fontSize: "clamp(1.6rem, 2.5vw, 2.2rem)",
+                                        color: i === current ? "#e8391d" : "rgba(255,255,255,0.75)",
+                                    }}
+                                >
+                                    {st.percent}
+                                </p>
+                                <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold leading-snug">
+                                    {st.label}
+                                </p>
+                            </div>
+                        </motion.button>
+                    ))}
                 </div>
             </div>
         </section>
