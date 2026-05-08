@@ -1,7 +1,7 @@
 "use client";
 import "@/lib/gsap-init";
-import { useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import {
@@ -68,6 +68,30 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
     const magnetic1 = useMagnetic();
     const magnetic2 = useMagnetic();
 
+    // --- Spotlight State & Motion Values ---
+    const [isHoveringLeft, setIsHoveringLeft] = useState(false);
+    const spotlightX = useMotionValue(-1000);
+    const spotlightY = useMotionValue(-1000);
+
+    // Dynamic HIGH-INTENSITY background glow color based on Day/Night mode
+    const spotlightBg = useTransform(
+        [spotlightX, spotlightY],
+        ([x, y]) => {
+            // Intense Daylight: Golden/White core with warm spread
+            // Intense Nightlight: Cyan/White core with cool spread
+            const glowColor = isDay 
+                ? 'radial-gradient(600px circle at ${x}px ${y}px, rgba(255, 255, 220, 0.6), rgba(255, 160, 50, 0.3) 40%, transparent 70%)' 
+                : 'radial-gradient(600px circle at ${x}px ${y}px, rgba(200, 240, 255, 0.7), rgba(50, 50, 255, 0.3) 40%, transparent 70%)';
+            return glowColor;
+        }
+    );
+
+    const handleLeftMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        spotlightX.set(e.clientX - rect.left);
+        spotlightY.set(e.clientY - rect.top);
+    };
+
     // GSAP Animations
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -133,7 +157,6 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
     return (
         <section className="relative w-full h-screen overflow-hidden">
             {/* ── Background split panels ── */}
-            {/* CHANGE 1: lg:grid-cols-2 replaced with lg:grid-cols-[2fr_3fr] (40% left, 60% right) */}
             <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
                 {/* LEFT — Red + bg image */}
                 <div className="relative bg-[#e8391d] overflow-hidden h-full">
@@ -174,29 +197,52 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
             </div>
 
             {/* ── Content layer ── */}
-            {/* CHANGE 2: lg:grid-cols-2 replaced with lg:grid-cols-[2fr_3fr] to match background */}
             <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-[2fr_3fr] pt-0">
-                {/* LEFT content */}
-                <div className="relative flex flex-col px-10 lg:px-14 pb-10 pt-32 lg:pt-40 h-full">
+                {/* LEFT content - Spotlight Moved Here for better Z-index */}
+                <div 
+                    className="relative flex flex-col px-10 lg:px-14 pb-10 pt-32 lg:pt-40 h-full"
+                    onMouseMove={handleLeftMouseMove}
+                    onMouseEnter={() => setIsHoveringLeft(true)}
+                    onMouseLeave={() => {
+                        setIsHoveringLeft(false);
+                        spotlightX.set(-1000);
+                    }}
+                >
+                    {/* Spotlight Cursor Glow Layer - Now inside content layer with mix-blend-mode */}
+                    <motion.div
+                        className="absolute inset-0 z-[2] pointer-events-none transition-opacity duration-300"
+                        style={{
+                            opacity: isHoveringLeft ? 1 : 0,
+                            background: spotlightBg,
+                            mixBlendMode: "overlay", // Makes the glow blend beautifully with the red background
+                        }}
+                    />
+
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                         className="relative z-10"
                     >
-                        {/* Heading */}
-                        <h1
+                        {/* Heading - Enhanced Zoom & Brightness Effect */}
+                        <motion.h1
                             ref={headingRef}
+                            animate={{ 
+                                scale: isHoveringLeft ? 1.06 : 1, // Increased zoom from 1.03 to 1.06
+                                filter: isHoveringLeft ? "brightness(1.3)" : "brightness(1)", // Text glows brighter
+                            }}
+                            transition={{ type: "spring", stiffness: 150, damping: 20 }}
                             className="font-black text-white leading-[1.0] tracking-tight mb-6 uppercase"
                             style={{
                                 fontSize: "clamp(2rem, 3vw, 3.2rem)",
                                 fontFamily: "'Raleway', Arial, sans-serif",
                                 wordBreak: "keep-all",
                                 overflowWrap: "normal",
+                                transformOrigin: "left center",
                             }}
                         >
                             A BEST OF BREED WEB DESIGN COMPANY AND DIGITAL MARKETING AGENCY.
-                        </h1>
+                        </motion.h1>
 
                         {/* Body */}
                         <motion.p
@@ -239,7 +285,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 2, duration: 0.5 }}
-                        className="absolute left-6 bottom-6 w-9 h-9 rounded-full border border-white/40 flex items-center justify-center text-white/60 cursor-pointer hover:border-white hover:text-white transition-all duration-300"
+                        className="absolute left-6 bottom-6 w-9 h-9 rounded-full border border-white/40 flex items-center justify-center text-white/60 cursor-pointer hover:border-white hover:text-white transition-all duration-300 z-10"
                     >
                         <Accessibility size={16} />
                     </motion.div>
