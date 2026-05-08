@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Mail, Menu, ChevronDown, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link"; // Next.js Link for fast routing
 
 // ── Services mega-menu data ───────────────────────────────────────────────────
 const servicesMenu = [
@@ -53,8 +54,8 @@ const navItems = [
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Portfolio", href: "/portfolio" },
-    { label: "Blogs", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Blogs", href: "/blogs" },
+    { label: "Contact", href: "/contact" },
 ];
 
 const dropdownVariants = {
@@ -69,11 +70,15 @@ const subVariants = {
     exit: { opacity: 0, x: -4, transition: { duration: 0.12 } },
 };
 
+// Slugify function to convert names like "Book Writing" to "book-writing"
+const slugify = (str: string) =>
+    str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
 interface NavbarProps {
     isDay?: boolean;
 }
 
-export default function Navbar({ isDay = false }: NavbarProps) {
+export default function Navbar2({ isDay = false }: NavbarProps) {
     const [scrolled, setScrolled] = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeService, setActiveService] = useState<string>(servicesMenu[0].label);
@@ -142,17 +147,17 @@ export default function Navbar({ isDay = false }: NavbarProps) {
             {/* ── Main nav row ── */}
             <nav className="flex items-center justify-between px-8 h-[72px]">
 
-                {/* Logo */}
-                <a href="/" className="shrink-0 flex items-center h-full">
+                {/* Logo - Changes based on Scroll State */}
+                <Link href="/" className="shrink-0 flex items-center h-full">
                     <Image
-                        src="/images/Bexley-Publishing-02.png"
+                        src={scrolled ? "/images/Bexley-Publishing-02.png" : "/images/Bexley-Publishing-03.png"}
                         alt="Bexley Publications"
                         width={350}
                         height={50}
-                        className="object-contain pt-1 pb-8 px-8"
+                        className="object-contain pt-1 pb-8 px-8 transition-opacity duration-300"
                         priority
                     />
-                </a>
+                </Link>
 
                 {/* Desktop nav links */}
                 <ul className="hidden lg:flex items-center">
@@ -165,8 +170,7 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                     onMouseEnter={handleServicesEnter}
                                     onMouseLeave={handleServicesLeave}
                                 >
-                                    {/* Changed from button to 'a' tag for navigation */}
-                                    <a
+                                    <Link
                                         href="/services"
                                         className={`flex items-center gap-1 px-3 py-2 font-semibold transition-colors duration-300 ${navTextColor} ${navHoverColor}`}
                                         style={{ fontFamily: "'Raleway', Arial, sans-serif", fontSize: "16px" }}
@@ -176,7 +180,7 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                             size={12}
                                             className={`transition-transform duration-200 ${chevronColor} ${servicesOpen ? "rotate-180" : ""}`}
                                         />
-                                    </a>
+                                    </Link>
 
                                     {/* Services Mega Dropdown */}
                                     <AnimatePresence>
@@ -239,14 +243,14 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                                         >
                                                             {activeLinks.map((link) => (
                                                                 <li key={link}>
-                                                                    <a
-                                                                        href="#"
+                                                                    <Link
+                                                                        href={`/services/${slugify(link)}`}
                                                                         className="flex items-center gap-2 py-1.5 text-[13px] text-white/75 hover:text-[#e8391d] hover:bg-white/5 rounded px-2 transition-colors group"
                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                                                     >
                                                                         <span className="w-1 h-1 rounded-full bg-[#e8391d] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                                                                         {link}
-                                                                    </a>
+                                                                    </Link>
                                                                 </li>
                                                             ))}
                                                         </motion.ul>
@@ -262,13 +266,13 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                         // Regular nav item with dynamic href
                         return (
                             <li key={item.label}>
-                                <a
+                                <Link
                                     href={item.href}
                                     className={`flex items-center px-3 py-2 font-semibold transition-colors duration-300 ${navTextColor} ${navHoverColor}`}
                                     style={{ fontFamily: "'Raleway', Arial, sans-serif", fontSize: "16px" }}
                                 >
                                     {item.label}
-                                </a>
+                                </Link>
                             </li>
                         );
                     })}
@@ -300,14 +304,14 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                         <li key="Services">
                                             {/* Split Mobile Layout: Link on left, Toggle on right */}
                                             <div className="flex items-center border-b border-white/5">
-                                                <a
+                                                <Link
                                                     href="/services"
                                                     className="flex-1 text-left px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] transition-colors"
                                                     style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
-                                                    onClick={() => setMobileOpen(false)} // Close menu on navigation
+                                                    onClick={() => setMobileOpen(false)}
                                                 >
                                                     Services
-                                                </a>
+                                                </Link>
                                                 <button
                                                     className="p-3 text-white/40 hover:text-[#e8391d] transition-colors"
                                                     onClick={() => setMobileServicesOpen((v) => !v)}
@@ -344,14 +348,14 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                                                         >
                                                                             {srv.links.map((link) => (
                                                                                 <li key={link}>
-                                                                                    <a
-                                                                                        href="#"
+                                                                                    <Link
+                                                                                        href={`/services/${slugify(link)}`}
                                                                                         className="block px-3 py-2 text-[12px] text-white/50 hover:text-[#e8391d] transition-colors"
                                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                                                                         onClick={() => setMobileOpen(false)}
                                                                                     >
                                                                                         {link}
-                                                                                    </a>
+                                                                                    </Link>
                                                                                 </li>
                                                                             ))}
                                                                         </motion.ul>
@@ -367,14 +371,14 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                 }
                                 return (
                                     <li key={item.label}>
-                                        <a
+                                        <Link
                                             href={item.href}
                                             className="block px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] border-b border-white/5 transition-colors"
                                             style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                             onClick={() => setMobileOpen(false)}
                                         >
                                             {item.label}
-                                        </a>
+                                        </Link>
                                     </li>
                                 );
                             })}

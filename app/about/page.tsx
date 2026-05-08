@@ -1,12 +1,12 @@
 // app/about/page.tsx
-import Navbar from "@/components/Navbar"; 
 import Footer from "@/components/sections/Footer";
 import AboutPage from "@/components/pages/AboutPage"; 
+import Navbar2 from "@/components/Navbar2";
 
 export default function About() {
     return (
         <>
-            <Navbar isDay={false} />
+            <Navbar2 isDay={false} />
 
             <AboutPage />
 

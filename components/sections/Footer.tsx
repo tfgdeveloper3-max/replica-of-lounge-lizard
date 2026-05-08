@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { motion, useInView, Variants } from "framer-motion";
 import { ArrowRight, Phone, Mail, MapPin } from "lucide-react";
+import Image from "next/image";
 
 // Safe TS Easing
 const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -111,12 +112,14 @@ export default function Footer() {
                     {/* LEFT: brand with staggered items */}
                     <motion.div variants={staggerContainer} className="flex flex-col">
                         <motion.div variants={fadeUp} className="mb-7">
-                            <span
-                                className="font-black italic text-white leading-none"
-                                style={{ fontSize: "clamp(1.3rem, 2vw, 1.7rem)" }}
-                            >
-                                Bexley<span className="text-[#e8391d]">publications</span>
-                            </span>
+                            <Image
+                                src="/images/Bexley-Publishing-03.png"
+                                alt="Bexley Publications"
+                                width={300}
+                                height={80}
+                                className="object-contain pt-1"
+                                priority
+                            />
                         </motion.div>
 
                         <motion.p variants={fadeUp} className="text-white/38 text-[13px] leading-[1.85] mb-8 max-w-[220px]">
