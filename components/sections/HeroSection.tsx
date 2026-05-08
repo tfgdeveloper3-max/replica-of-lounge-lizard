@@ -128,14 +128,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                             backgroundSize: "40px 40px",
                         }}
                     />
-                    <motion.span
-                        initial={{ x: 50, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ duration: 1.5, delay: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                        className="absolute right-[-10px] bottom-4 text-[150px] font-black text-black/10 leading-none select-none pointer-events-none"
-                    >
-                        1998
-                    </motion.span>
+                    {/* 1998 Wala element yaha se remove kar diya gaya hai */}
                 </div>
 
                 {/* RIGHT — Dark video */}
@@ -162,7 +155,8 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
             {/* ── Content layer ── */}
             <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-2 pt-0">
                 {/* LEFT content */}
-                <div className="relative flex flex-col justify-center px-10 lg:px-14 pb-10 h-full">
+                {/* justify-center hata kar pt-32 lg:pt-40 lagaya hai taaki content neeche aaye */}
+                <div className="relative flex flex-col px-10 lg:px-14 pb-10 pt-32 lg:pt-40 h-full">
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
@@ -211,7 +205,6 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                                 onMouseLeave={magnetic1.handleLeave}
                                 whileTap={{ scale: 0.95 }}
                                 className="inline-flex items-center gap-3 border-2 border-white text-white font-bold uppercase tracking-widest px-7 py-3.5 bg-transparent cursor-pointer"
-                            // Note: whileHover removed here because magnetic effect conflicts with simple CSS hover scaling
                             >
                                 Request Growth Strategy <ArrowRight size={16} />
                             </motion.a>

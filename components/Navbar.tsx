@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Mail, Menu, ChevronDown, ChevronRight, X } from "lucide-react";
+import Image from "next/image";
 
 // ── Services mega-menu data ───────────────────────────────────────────────────
 const servicesMenu = [
@@ -143,16 +144,14 @@ export default function Navbar({ isDay = false }: NavbarProps) {
 
                 {/* Logo */}
                 <a href="/" className="shrink-0 flex items-center h-full">
-                    <span
-                        className="font-black leading-none tracking-tight italic"
-                        style={{
-                            fontSize: "clamp(1.25rem, 1.8vw, 1.6rem)",
-                            fontFamily: "'Raleway', Arial, sans-serif",
-                        }}
-                    >
-                        <span className={scrolled ? "text-white" : "text-white"}>Bexley</span>
-                        <span className="text-[#e8391d] transition-colors duration-300">publications</span>
-                    </span>
+                    <Image
+                        src="/images/Bexley-Publishing-02.png"
+                        alt="Bexley Publications"
+                        width={300}
+                        height={80}
+                        className="object-contain pt-1 pb-8 px-7"
+                        priority
+                    />
                 </a>
 
                 {/* Desktop nav links */}
@@ -166,7 +165,6 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                     onMouseEnter={handleServicesEnter}
                                     onMouseLeave={handleServicesLeave}
                                 >
-                                    {/* Changed from button to 'a' tag for navigation */}
                                     <a
                                         href="/services"
                                         className={`flex items-center gap-1 px-3 py-2 font-semibold transition-colors duration-300 ${navTextColor} ${navHoverColor}`}
@@ -305,7 +303,7 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                                     href="/services"
                                                     className="flex-1 text-left px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] transition-colors"
                                                     style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
-                                                    onClick={() => setMobileOpen(false)} // Close menu on navigation
+                                                    onClick={() => setMobileOpen(false)}
                                                 >
                                                     Services
                                                 </a>
