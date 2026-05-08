@@ -5,7 +5,6 @@ import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/Aboutsection";
 import StickyProposal from "@/components/Stickyproposal";
 import FeaturedWork from "@/components/sections/Featuredwork";
-import ClientsSection from "@/components/sections/Clientssection";
 import Marketingsection from "@/components/sections/Marketingsection";
 import Brandingsection from "@/components/sections/Brandingsection";
 import Faqsection from "@/components/sections/Faqsection";
@@ -27,8 +26,6 @@ export default function Home() {
       <AboutSection />
 
       <FeaturedWork />
-
-      <ClientsSection />
 
       <Marketingsection />
 

@@ -1,7 +1,10 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useInView, Variants } from "framer-motion";
 import { Plus, Minus, ArrowRight } from "lucide-react";
+
+// Safe TS Easing
+const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const faqs = [
     {
@@ -54,56 +57,115 @@ const faqs = [
     },
 ];
 
+// --- Animation Variants ---
+const headerMask: Variants = {
+    hidden: { clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)", y: 20 },
+    visible: {
+        clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+        y: 0,
+        transition: { duration: 0.8, ease: smoothEase }
+    },
+};
+
+const listStagger: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
+};
+
+const itemFadeUp: Variants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(3px)" },
+    visible: {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        transition: { duration: 0.5, ease: smoothEase },
+    },
+};
+
+const innerContentStagger: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
+};
+
+
 export default function FAQSection() {
     const [open, setOpen] = useState<number | null>(0);
+    const sectionRef = useRef<HTMLElement>(null);
+    const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
 
     return (
         <section
+            ref={sectionRef}
             className="relative w-full bg-[#111]"
             style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
         >
-            {/* ── Header band ── */}
+            {/* ── Animated Header band ── */}
             <div className="bg-[#e8391d] px-12 lg:px-24 py-16">
                 <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-end">
-                    <div>
-                        <p className="text-white/70 font-black uppercase tracking-[0.28em] text-[11px] mb-4">Got Questions?</p>
-                        <h2
+                    <div className="overflow-hidden">
+                        <motion.p
+                            initial={{ y: "100%" }}
+                            animate={isInView ? { y: 0 } : {}}
+                            transition={{ duration: 0.5, ease: smoothEase }}
+                            className="text-white/70 font-black uppercase tracking-[0.28em] text-[11px] mb-4"
+                        >
+                            Got Questions?
+                        </motion.p>
+                        <motion.h2
+                            variants={headerMask}
+                            initial="hidden"
+                            animate={isInView ? "visible" : "hidden"}
                             className="font-black text-white uppercase leading-[1.0]"
                             style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
                         >
                             EVERYTHING<br />YOU NEED<br />TO KNOW.
-                        </h2>
+                        </motion.h2>
                     </div>
-                    <div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ delay: 0.4, duration: 0.6, ease: smoothEase }}
+                    >
                         <p className="text-white/80 leading-[1.85] mb-8" style={{ fontSize: "0.95rem" }}>
                             Still have questions? Our publishing consultants are available 7 days a week to guide you through every stage of your book journey — from first idea to bestseller.
                         </p>
                         <motion.a
                             href="#"
-                            whileHover={{ backgroundColor: "rgba(0,0,0,0.2)" }}
-                            className="inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 text-[12px] transition-colors"
+                            whileHover={{ backgroundColor: "rgba(0,0,0,0.2)", gap: "14px" }}
+                            whileTap={{ scale: 0.97 }}
+                            className="inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 text-[12px] transition-all cursor-pointer"
                         >
                             Talk To A Consultant <ArrowRight size={15} />
                         </motion.a>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
 
-            {/* ── Accordion ── */}
-            <div className="px-12 lg:px-24 py-8 max-w-[1100px] mx-auto">
+            {/* ── Scroll-Triggered Accordion ── */}
+            <motion.div
+                variants={listStagger}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
+                className="px-12 lg:px-24 py-8 max-w-[1100px] mx-auto"
+            >
                 {faqs.map((faq, i) => (
-                    <div key={i} className="border-b border-white/8">
+                    <motion.div
+                        key={i}
+                        variants={itemFadeUp}
+                        className="border-b border-white/8"
+                    >
                         <button
                             onClick={() => setOpen(open === i ? null : i)}
-                            className="w-full flex items-center justify-between py-7 text-left group"
+                            className="w-full flex items-center justify-between py-7 text-left group cursor-pointer"
                         >
                             <div className="flex items-center gap-6 flex-1 min-w-0">
                                 <span
-                                    className="font-black tabular-nums shrink-0 transition-colors duration-200 text-right"
+                                    className="font-black tabular-nums shrink-0 transition-all duration-300 text-right"
                                     style={{
                                         fontSize: "clamp(1.1rem, 1.8vw, 1.6rem)",
                                         minWidth: "3rem",
                                         color: open === i ? "#e8391d" : "rgba(255,255,255,0.12)",
+                                        transform: open === i ? "scale(1.1)" : "scale(1)"
                                     }}
                                 >
                                     {String(i + 1).padStart(2, "0")}
@@ -129,43 +191,62 @@ export default function FAQSection() {
                             </div>
                         </button>
 
+                        {/* Inner Cascading Content Animation */}
                         <AnimatePresence initial={false}>
                             {open === i && (
                                 <motion.div
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: "auto", opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                                    transition={{ duration: 0.45, ease: smoothEase }} // Silky smooth height animation
                                     className="overflow-hidden"
                                 >
-                                    <div className="pl-[4.5rem] pr-4 pb-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
+                                    <motion.div
+                                        variants={innerContentStagger}
+                                        initial="hidden"
+                                        animate="visible"
+                                        className="pl-[4.5rem] pr-4 pb-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start"
+                                    >
                                         <div>
-                                            <p className="text-white/55 leading-[1.85] mb-6" style={{ fontSize: "0.9rem" }}>
+                                            <motion.p
+                                                variants={itemFadeUp}
+                                                className="text-white/55 leading-[1.85] mb-6"
+                                                style={{ fontSize: "0.9rem" }}
+                                            >
                                                 {faq.body}
-                                            </p>
-                                            <ul className="flex flex-col gap-2.5">
+                                            </motion.p>
+                                            <motion.ul
+                                                variants={innerContentStagger}
+                                                className="flex flex-col gap-2.5"
+                                            >
                                                 {faq.bullets.map((b) => (
-                                                    <li key={b} className="flex items-start gap-3 text-white/75 text-[13px]">
+                                                    <motion.li
+                                                        key={b}
+                                                        variants={itemFadeUp}
+                                                        className="flex items-start gap-3 text-white/75 text-[13px]"
+                                                    >
                                                         <span className="text-[#e8391d] mt-0.5 text-base leading-none shrink-0">›</span>
                                                         {b}
-                                                    </li>
+                                                    </motion.li>
                                                 ))}
-                                            </ul>
+                                            </motion.ul>
                                         </div>
                                         <motion.a
                                             href={faq.cta.href}
+                                            variants={itemFadeUp}
                                             whileHover={{ backgroundColor: "#c0271a" }}
-                                            className="shrink-0 inline-flex items-center gap-2 bg-[#e8391d] text-white font-black uppercase tracking-widest px-6 py-3.5 rounded-xl text-[11px] whitespace-nowrap transition-colors self-start"
+                                            whileTap={{ scale: 0.97 }}
+                                            className="shrink-0 inline-flex items-center gap-2 bg-[#e8391d] text-white font-black uppercase tracking-widest px-6 py-3.5 rounded-xl text-[11px] whitespace-nowrap transition-colors self-start cursor-pointer"
                                         >
                                             {faq.cta.label} <ArrowRight size={13} />
                                         </motion.a>
-                                    </div>
+                                    </motion.div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </section>
     );
 }

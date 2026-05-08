@@ -46,14 +46,14 @@ const servicesMenu = [
     },
 ];
 
-// ── Top-level nav items ───────────────────────────────────────────────────────
+// ── Top-level nav items with Routes ───────────────────────────────────────────
 const navItems = [
-    { label: "Home" },
-    { label: "About" },
-    { label: "Services" },
-    { label: "Portfolio" },
-    { label: "Blogs" },
-    { label: "Contact" },
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
+    { label: "Services", href: "/services" },
+    { label: "Portfolio", href: "/portfolio" },
+    { label: "Blogs", href: "#" },
+    { label: "Contact", href: "#" },
 ];
 
 const dropdownVariants = {
@@ -72,7 +72,7 @@ interface NavbarProps {
     isDay?: boolean;
 }
 
-export default function Navbar({ isDay = true }: NavbarProps) {
+export default function Navbar({ isDay = false }: NavbarProps) {
     const [scrolled, setScrolled] = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeService, setActiveService] = useState<string>(servicesMenu[0].label);
@@ -127,7 +127,7 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                     1-888-444-0110
                 </a>
                 <a
-                    href="mailto:sales@oakmontpublications.com"
+                    href="mailto:sales@bexleypublications.com"
                     className={`flex items-center gap-1.5 text-[13px] ${contactColor} ${scrolled ? "hover:text-black/60" : "hover:text-[#e8391d]"} transition-colors group`}
                     style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                 >
@@ -150,8 +150,8 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                             fontFamily: "'Raleway', Arial, sans-serif",
                         }}
                     >
-                        <span className="text-white">lounge</span>
-                        <span className="text-white transition-colors duration-300">lizard</span>
+                        <span className={scrolled ? "text-white" : "text-white"}>Bexley</span>
+                        <span className="text-[#e8391d] transition-colors duration-300">publications</span>
                     </span>
                 </a>
 
@@ -166,7 +166,9 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                                     onMouseEnter={handleServicesEnter}
                                     onMouseLeave={handleServicesLeave}
                                 >
-                                    <button
+                                    {/* Changed from button to 'a' tag for navigation */}
+                                    <a
+                                        href="/services"
                                         className={`flex items-center gap-1 px-3 py-2 font-semibold transition-colors duration-300 ${navTextColor} ${navHoverColor}`}
                                         style={{ fontFamily: "'Raleway', Arial, sans-serif", fontSize: "16px" }}
                                     >
@@ -175,7 +177,7 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                                             size={12}
                                             className={`transition-transform duration-200 ${chevronColor} ${servicesOpen ? "rotate-180" : ""}`}
                                         />
-                                    </button>
+                                    </a>
 
                                     {/* Services Mega Dropdown */}
                                     <AnimatePresence>
@@ -258,11 +260,11 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                             );
                         }
 
-                        // Regular nav item
+                        // Regular nav item with dynamic href
                         return (
                             <li key={item.label}>
                                 <a
-                                    href="#"
+                                    href={item.href}
                                     className={`flex items-center px-3 py-2 font-semibold transition-colors duration-300 ${navTextColor} ${navHoverColor}`}
                                     style={{ fontFamily: "'Raleway', Arial, sans-serif", fontSize: "16px" }}
                                 >
@@ -297,14 +299,24 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                                 if (item.label === "Services") {
                                     return (
                                         <li key="Services">
-                                            <button
-                                                className="w-full text-left px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] border-b border-white/5 transition-colors flex items-center justify-between"
-                                                style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
-                                                onClick={() => setMobileServicesOpen((v) => !v)}
-                                            >
-                                                Services
-                                                <ChevronDown size={14} className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""} text-white/40`} />
-                                            </button>
+                                            {/* Split Mobile Layout: Link on left, Toggle on right */}
+                                            <div className="flex items-center border-b border-white/5">
+                                                <a
+                                                    href="/services"
+                                                    className="flex-1 text-left px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] transition-colors"
+                                                    style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
+                                                    onClick={() => setMobileOpen(false)} // Close menu on navigation
+                                                >
+                                                    Services
+                                                </a>
+                                                <button
+                                                    className="p-3 text-white/40 hover:text-[#e8391d] transition-colors"
+                                                    onClick={() => setMobileServicesOpen((v) => !v)}
+                                                >
+                                                    <ChevronDown size={14} className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
+                                                </button>
+                                            </div>
+
                                             <AnimatePresence>
                                                 {mobileServicesOpen && (
                                                     <motion.ul
@@ -337,6 +349,7 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                                                                                         href="#"
                                                                                         className="block px-3 py-2 text-[12px] text-white/50 hover:text-[#e8391d] transition-colors"
                                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
+                                                                                        onClick={() => setMobileOpen(false)}
                                                                                     >
                                                                                         {link}
                                                                                     </a>
@@ -356,9 +369,10 @@ export default function Navbar({ isDay = true }: NavbarProps) {
                                 return (
                                     <li key={item.label}>
                                         <a
-                                            href="#"
+                                            href={item.href}
                                             className="block px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] border-b border-white/5 transition-colors"
                                             style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
+                                            onClick={() => setMobileOpen(false)}
                                         >
                                             {item.label}
                                         </a>

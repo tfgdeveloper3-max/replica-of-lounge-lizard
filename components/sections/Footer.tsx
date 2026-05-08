@@ -1,6 +1,10 @@
 "use client";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView, Variants } from "framer-motion";
 import { ArrowRight, Phone, Mail, MapPin } from "lucide-react";
+
+// Safe TS Easing
+const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const writing = ["Book Writing", "Ghostwriting", "Fiction Writing", "Non-Fiction Writing", "Children's Book Writing", "Memoir & Biography", "Script Writing"];
 const editing = ["Book Editing", "Book Proofreading", "Children's Book Editing", "Ebook Creation", "Audiobook Narration", "Book Formatting", "Book Publishing"];
@@ -17,118 +21,180 @@ const socials = [
 const lCls = "text-white/40 hover:text-white transition-colors duration-200 text-[13px] leading-[2.1]";
 const hCls = "font-black text-white uppercase text-[11px] tracking-[0.2em] mb-4";
 
+// --- Animation Variants ---
+const ctaMask: Variants = {
+    hidden: { clipPath: "polygon(0 0, 0% 0, 0% 100%, 0 100%)" },
+    visible: { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", transition: { duration: 1, ease: smoothEase } },
+};
+
+const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(3px)" },
+    visible: {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        transition: { duration: 0.5, ease: smoothEase },
+    },
+};
+
+const staggerContainer: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const linkStagger: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.04 } },
+};
+
+
 export default function Footer() {
+    const footerRef = useRef<HTMLElement>(null);
+    const isInView = useInView(footerRef, { once: true, margin: "-50px" });
+
     return (
         <footer
+            ref={footerRef}
             className="w-full bg-[#0d0d0d] border-t border-white/5"
             style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
         >
-            {/* ── CTA Banner ── */}
-            <div className="bg-[#e8391d] px-12 lg:px-20 py-12">
-                <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-6">
-                    <div>
-                        <p className="text-white/70 text-[11px] font-black uppercase tracking-[0.28em] mb-2">Ready to Publish?</p>
-                        <h3
+            {/* ── CTA Banner with Background Sweep ── */}
+            <motion.div
+                initial={{ scaleX: 0, transformOrigin: "left" }}
+                animate={isInView ? { scaleX: 1 } : {}}
+                transition={{ duration: 1.2, ease: smoothEase }}
+                className="bg-[#e8391d] px-12 lg:px-20 py-12 origin-left"
+            >
+                <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 overflow-hidden">
+                    <div className="overflow-hidden">
+                        <motion.p
+                            initial={{ y: "100%" }}
+                            animate={isInView ? { y: 0 } : {}}
+                            transition={{ duration: 0.5, delay: 0.4, ease: smoothEase }}
+                            className="text-white/70 text-[11px] font-black uppercase tracking-[0.28em] mb-2"
+                        >
+                            Ready to Publish?
+                        </motion.p>
+                        <motion.h3
+                            variants={ctaMask}
+                            initial="hidden"
+                            animate={isInView ? "visible" : "hidden"}
                             className="font-black text-white uppercase leading-none"
                             style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)" }}
                         >
                             LET'S BRING YOUR BOOK TO LIFE.
-                        </h3>
+                        </motion.h3>
                     </div>
                     <motion.a
                         href="#"
-                        whileHover={{ backgroundColor: "rgba(0,0,0,0.15)" }}
-                        className="shrink-0 inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 text-[12px] transition-colors"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ delay: 0.8, duration: 0.6 }}
+                        whileHover={{ backgroundColor: "rgba(0,0,0,0.15)", gap: "14px" }}
+                        whileTap={{ scale: 0.97 }}
+                        className="shrink-0 inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 text-[12px] transition-all cursor-pointer"
                     >
                         Get a Free Proposal <ArrowRight size={15} />
                     </motion.a>
                 </div>
-            </div>
+            </motion.div>
 
             {/* ── Main body ── */}
-            <div className="px-12 lg:px-20 py-16 max-w-[1200px] mx-auto">
+            <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
+                className="px-12 lg:px-20 py-16 max-w-[1200px] mx-auto"
+            >
                 <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-16">
 
-                    {/* LEFT: brand */}
-                    <div>
-                        <div className="mb-7">
+                    {/* LEFT: brand with staggered items */}
+                    <motion.div variants={staggerContainer} className="flex flex-col">
+                        <motion.div variants={fadeUp} className="mb-7">
                             <span
                                 className="font-black italic text-white leading-none"
                                 style={{ fontSize: "clamp(1.3rem, 2vw, 1.7rem)" }}
                             >
                                 Bexley<span className="text-[#e8391d]">publications</span>
                             </span>
-                        </div>
+                        </motion.div>
 
-                        <p className="text-white/38 text-[13px] leading-[1.85] mb-8 max-w-[220px]">
+                        <motion.p variants={fadeUp} className="text-white/38 text-[13px] leading-[1.85] mb-8 max-w-[220px]">
                             Transforming ideas into published masterpieces since 2012. Your story deserves to be told.
-                        </p>
+                        </motion.p>
 
                         {/* contact mini */}
-                        <div className="flex flex-col gap-3 mb-8">
+                        <motion.div variants={fadeUp} className="flex flex-col gap-3 mb-8">
                             <a href="tel:18884440110" className="flex items-center gap-2 text-white/40 hover:text-white text-[12px] transition-colors">
                                 <Phone size={13} className="text-[#e8391d] shrink-0" />
                                 1-888-444-0110
                             </a>
                             <a href="mailto:sales@oakmontpublications.com" className="flex items-center gap-2 text-white/40 hover:text-white text-[12px] transition-colors">
                                 <Mail size={13} className="text-[#e8391d] shrink-0" />
-                                sales@oakmontpublications.com
+                                sales@bexleypublications.com
                             </a>
-                        </div>
+                        </motion.div>
 
                         {/* socials */}
-                        <div className="flex items-center gap-2.5 mb-8">
+                        <motion.div variants={fadeUp} className="flex items-center gap-2.5 mb-8">
                             {socials.map((s) => (
-                                <a
+                                <motion.a
                                     key={s.label}
                                     href="#"
+                                    whileHover={{ scale: 1.15, y: -2 }}
                                     className="w-9 h-9 rounded-full bg-white/6 border border-white/10 flex items-center justify-center text-white/45 hover:bg-[#e8391d] hover:border-[#e8391d] hover:text-white transition-all duration-300"
                                 >
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
                                         <path d={s.path} />
                                     </svg>
-                                </a>
+                                </motion.a>
                             ))}
-                        </div>
+                        </motion.div>
 
                         {/* mini stats */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
                             {[["500+", "Books"], ["300+", "Authors"], ["12+", "Years"], ["98%", "Rating"]].map(([n, l]) => (
                                 <div key={l} className="bg-white/4 rounded-xl p-3 text-center border border-white/6">
                                     <p className="font-black text-white text-lg leading-none">{n}</p>
                                     <p className="text-white/28 text-[9px] uppercase tracking-wider mt-1">{l}</p>
                                 </div>
                             ))}
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
 
-                    {/* RIGHT: 4-col links */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div>
-                            <p className={hCls}>Writing</p>
-                            <ul>{writing.map((l) => <li key={l}><a href="#" className={lCls}>{l}</a></li>)}</ul>
-                        </div>
-                        <div>
-                            <p className={hCls}>Editing</p>
-                            <ul>{editing.map((l) => <li key={l}><a href="#" className={lCls}>{l}</a></li>)}</ul>
-                        </div>
-                        <div>
-                            <p className={hCls}>Design</p>
-                            <ul>{design.map((l) => <li key={l}><a href="#" className={lCls}>{l}</a></li>)}</ul>
-                        </div>
-                        <div>
-                            <p className={hCls}>Company</p>
-                            <ul>{company.map((l) => <li key={l}><a href="#" className={lCls}>{l}</a></li>)}</ul>
-                        </div>
-                    </div>
+                    {/* RIGHT: 4-col cascading links */}
+                    <motion.div variants={staggerContainer} className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                        {[
+                            { title: "Writing", items: writing },
+                            { title: "Editing", items: editing },
+                            { title: "Design", items: design },
+                            { title: "Company", items: company },
+                        ].map((col) => (
+                            <motion.div key={col.title} variants={fadeUp}>
+                                <p className={hCls}>{col.title}</p>
+                                <motion.ul variants={linkStagger} initial="hidden" animate="visible">
+                                    {col.items.map((l) => (
+                                        <motion.li key={l} variants={fadeUp}>
+                                            <a href="#" className={lCls}>{l}</a>
+                                        </motion.li>
+                                    ))}
+                                </motion.ul>
+                            </motion.div>
+                        ))}
+                    </motion.div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* ── Bottom bar ── */}
-            <div className="border-t border-white/5 px-12 lg:px-20 py-6">
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 1, duration: 0.8 }}
+                className="border-t border-white/5 px-12 lg:px-20 py-6"
+            >
                 <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
                     <p className="text-white/25 text-[12px]">
-                        © 2026 OakMont Publications LLC. All Rights Reserved.
+                        © 2026 Bexley Publications LLC. All Rights Reserved.
                     </p>
                     <div className="flex items-center gap-5">
                         {["Privacy Policy", "Terms of Use", "Refund Policy", "Sitemap"].map((l) => (
@@ -136,14 +202,17 @@ export default function Footer() {
                         ))}
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* scroll to top */}
+            {/* scroll to top with Spring Pop */}
             <motion.button
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 1.5, type: "spring", stiffness: 200, damping: 15 }}
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-[#e8391d] flex items-center justify-center text-white shadow-xl shadow-[#e8391d]/30"
+                whileHover={{ scale: 1.15, boxShadow: "0 0 25px rgba(232, 57, 29, 0.5)" }}
+                whileTap={{ scale: 0.9 }}
+                className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-[#e8391d] flex items-center justify-center text-white shadow-xl shadow-[#e8391d]/30 cursor-pointer"
             >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
                     <polyline points="18 15 12 9 6 15" />
