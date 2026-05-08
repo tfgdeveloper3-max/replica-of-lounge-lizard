@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Mail, Menu, ChevronDown, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 // ── Services mega-menu data ───────────────────────────────────────────────────
 const servicesMenu = [
@@ -62,6 +63,10 @@ const dropdownVariants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" as const } },
     exit: { opacity: 0, y: -6, transition: { duration: 0.15 } },
 };
+
+// Slugify function to convert names like "Book Writing" to "book-writing"
+const slugify = (str: string) =>
+    str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
 const subVariants = {
     hidden: { opacity: 0, x: -6 },
@@ -239,14 +244,14 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                                         >
                                                             {activeLinks.map((link) => (
                                                                 <li key={link}>
-                                                                    <a
-                                                                        href="#"
+                                                                    <Link
+                                                                        href={`/InnerServices/${slugify(link)}`}
                                                                         className="flex items-center gap-2 py-1.5 text-[13px] text-white/75 hover:text-[#e8391d] hover:bg-white/5 rounded px-2 transition-colors group"
                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                                                     >
                                                                         <span className="w-1 h-1 rounded-full bg-[#e8391d] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                                                                         {link}
-                                                                    </a>
+                                                                    </Link>
                                                                 </li>
                                                             ))}
                                                         </motion.ul>

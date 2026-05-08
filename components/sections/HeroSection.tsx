@@ -64,14 +64,15 @@ interface HeroSectionProps {
 export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
     const headingRef = useRef<HTMLHeadingElement>(null);
     const leftBgRef = useRef<HTMLDivElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const magnetic1 = useMagnetic();
     const magnetic2 = useMagnetic();
 
+    // GSAP Animations
     useEffect(() => {
         const ctx = gsap.context(() => {
             const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-            // 1. Left Background Ken Burns Effect
             if (leftBgRef.current) {
                 tl.fromTo(
                     leftBgRef.current,
@@ -81,11 +82,10 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                 );
             }
 
-            // 2. Cinematic 3D Text Reveal
             if (headingRef.current) {
                 try {
                     const split = new SplitText(headingRef.current, { type: "chars" });
-                    gsap.set(headingRef.current, { perspective: 1000 }); // 3D depth ke liye zaroori hai
+                    gsap.set(headingRef.current, { perspective: 1000 });
 
                     tl.from(
                         split.chars,
@@ -98,7 +98,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                             duration: 1.4,
                             ease: "back.out(1.7)",
                         },
-                        0.3 // Thoda delay taaki background pehle set ho
+                        0.3
                     );
                 } catch (e) {
                     console.error("SplitText Error:", e);
@@ -106,13 +106,35 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
             }
         });
 
-        return () => ctx.revert(); // GSAP cleanup for Next.js strict mode
+        return () => ctx.revert();
     }, []);
+
+    // Custom 20-Second Delayed Video Loop
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const handleVideoEnd = () => {
+            setTimeout(() => {
+                if (video) {
+                    video.currentTime = 0;
+                    video.play().catch(e => console.error("Video play error:", e));
+                }
+            }, 20000);
+        };
+
+        video.addEventListener('ended', handleVideoEnd);
+
+        return () => {
+            video.removeEventListener('ended', handleVideoEnd);
+        };
+    }, [isDay]);
 
     return (
         <section className="relative w-full h-screen overflow-hidden">
             {/* ── Background split panels ── */}
-            <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-2">
+            {/* CHANGE 1: lg:grid-cols-2 replaced with lg:grid-cols-[2fr_3fr] (40% left, 60% right) */}
+            <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
                 {/* LEFT — Red + bg image */}
                 <div className="relative bg-[#e8391d] overflow-hidden h-full">
                     <div
@@ -128,24 +150,23 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                             backgroundSize: "40px 40px",
                         }}
                     />
-                    {/* 1998 Wala element yaha se remove kar diya gaya hai */}
                 </div>
 
                 {/* RIGHT — Dark video */}
                 <div className="relative bg-[#05070f] overflow-hidden h-full">
                     <AnimatePresence mode="wait">
                         <motion.video
+                            ref={videoRef}
                             key={isDay ? "day-video" : "night-video"}
-                            src={isDay ? "/video/LoungeLizardDay.mp4" : "/video/LoungeLizardNight.mp4"}
+                            src={isDay ? "/video/BexleyDay.mp4" : "/video/BexleyNight.mp4"}
                             initial={{ opacity: 0, scale: 1.1 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                             autoPlay
                             muted
-                            loop
                             playsInline
-                            className="absolute inset-0 w-full h-full object-cover"
+                            className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
                         />
                     </AnimatePresence>
                     <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none" />
@@ -153,9 +174,9 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
             </div>
 
             {/* ── Content layer ── */}
-            <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-2 pt-0">
+            {/* CHANGE 2: lg:grid-cols-2 replaced with lg:grid-cols-[2fr_3fr] to match background */}
+            <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-[2fr_3fr] pt-0">
                 {/* LEFT content */}
-                {/* justify-center hata kar pt-32 lg:pt-40 lagaya hai taaki content neeche aaye */}
                 <div className="relative flex flex-col px-10 lg:px-14 pb-10 pt-32 lg:pt-40 h-full">
                     <motion.div
                         variants={containerVariants}
@@ -163,20 +184,12 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         animate="visible"
                         className="relative z-10"
                     >
-                        {/* Badge */}
-                        <motion.div variants={fadeUp} className="mb-5">
-                            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white border border-white/40 rounded-full px-4 py-1.5 backdrop-blur-sm bg-white/5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                                Digital Agency Since 1998
-                            </span>
-                        </motion.div>
-
                         {/* Heading */}
                         <h1
                             ref={headingRef}
                             className="font-black text-white leading-[1.0] tracking-tight mb-6 uppercase"
                             style={{
-                                fontSize: "clamp(2rem, 4vw, 4.2rem)",
+                                fontSize: "clamp(2rem, 3vw, 3.2rem)",
                                 fontFamily: "'Raleway', Arial, sans-serif",
                                 wordBreak: "keep-all",
                                 overflowWrap: "normal",
@@ -189,7 +202,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         <motion.p
                             variants={fadeUp}
                             className="text-white/85 leading-relaxed mb-8"
-                            style={{ fontSize: "clamp(0.82rem, 1vw, 0.95rem)", maxWidth: "460px", fontFamily: "'Raleway', Arial, sans-serif" }}
+                            style={{ fontSize: "clamp(0.82rem, 1vw, 0.95rem)", maxWidth: "450px", fontFamily: "'Raleway', Arial, sans-serif" }}
                         >
                             Elevate the design and development of your Website and ignite your Digital Marketing
                             results. Our brand-centric storytelling drives high conversions — where intoxicating
@@ -242,7 +255,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ duration: 0.3 }}
-                            className="absolute top-4 right-6 z-20 text-white/50 text-xs font-bold uppercase tracking-widest"
+                            className="absolute top-24 right-6 z-20 text-white/50 text-xs font-bold uppercase tracking-widest"
                             style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                         >
                             {isDay ? "Day" : "Night"}
