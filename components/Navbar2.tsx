@@ -54,7 +54,7 @@ const navItems = [
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Portfolio", href: "/portfolio" },
-    { label: "Blogs", href: "/blogs" },
+    { label: "Blogs", href: "/Blogs" },
     { label: "Contact", href: "/contact" },
 ];
 
@@ -244,7 +244,7 @@ export default function Navbar2({ isDay = false }: NavbarProps) {
                                                             {activeLinks.map((link) => (
                                                                 <li key={link}>
                                                                     <Link
-                                                                        href={`/services/${slugify(link)}`}
+                                                                        href={`/InnerServices/${slugify(link)}`}
                                                                         className="flex items-center gap-2 py-1.5 text-[13px] text-white/75 hover:text-[#e8391d] hover:bg-white/5 rounded px-2 transition-colors group"
                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                                                     >

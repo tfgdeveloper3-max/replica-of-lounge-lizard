@@ -1,13 +1,14 @@
+// app/contact/page.tsx
 import Navbar2 from "@/components/Navbar2";
 import Footer from "@/components/sections/Footer";
-import ServicesPage from "@/components/pages/ServicesPage";
+import ContactPage from "@/components/pages/ContactPage";
 
-export default function Services() {
+export default function Contact() {
     return (
         <>
             <Navbar2 isDay={false} />
 
-            <ServicesPage />
+            <ContactPage />
 
             <Footer />
         </>

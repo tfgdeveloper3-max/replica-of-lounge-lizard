@@ -53,8 +53,8 @@ const navItems = [
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Portfolio", href: "/portfolio" },
-    { label: "Blogs", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Blogs", href: "/Blogs" },
+    { label: "Contact", href: "/contact" },
 ];
 
 const dropdownVariants = {

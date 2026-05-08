@@ -1,5 +1,5 @@
 // app/portfolio/page.tsx
-import Navbar from "@/components/Navbar";
+import Navbar2 from "@/components/Navbar2";
 import Footer from "@/components/sections/Footer";
 import PortfolioPage from "@/components/pages/PortfolioPage";
 
@@ -7,7 +7,7 @@ export default function Portfolio() {
     return (
         <>
             {/* isDay={false} for dark hero background */}
-            <Navbar isDay={false} />
+            <Navbar2 isDay={false} />
 
             <PortfolioPage />
 

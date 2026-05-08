@@ -1,13 +1,14 @@
+// app/services/book-writing/page.tsx
 import Navbar2 from "@/components/Navbar2";
 import Footer from "@/components/sections/Footer";
-import ServicesPage from "@/components/pages/ServicesPage";
+import BookWritingPage from "@/components/pages/BookWritingPage";
 
-export default function Services() {
+export default function BookWriting() {
     return (
         <>
             <Navbar2 isDay={false} />
 
-            <ServicesPage />
+            <BookWritingPage />
 
             <Footer />
         </>
