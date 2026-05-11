@@ -5,8 +5,7 @@ import HorrorWritingPage from "@/components/pages/HorrorWritingPage";
 export default function HorrorWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <HorrorWritingPage />
 

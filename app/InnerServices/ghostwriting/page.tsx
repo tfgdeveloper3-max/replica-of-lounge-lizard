@@ -6,8 +6,7 @@ import GhostwritingPage from "@/components/pages/GhostwritingPage";
 export default function Ghostwriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <GhostwritingPage />
 

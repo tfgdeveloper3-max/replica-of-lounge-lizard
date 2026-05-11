@@ -5,8 +5,7 @@ import ScriptWritingPage from "@/components/pages/ScriptWritingPage";
 export default function ScriptWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <ScriptWritingPage />
 

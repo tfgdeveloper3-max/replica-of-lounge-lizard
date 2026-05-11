@@ -7,7 +7,7 @@ export default function MysteryWriting() {
     return (
         <>
             {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <MysteryWritingPage />
 

@@ -6,8 +6,7 @@ import ChildrensBookPage from "@/components/pages/ChildrensBookPage";
 export default function ChildrensBookWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <ChildrensBookPage />
 

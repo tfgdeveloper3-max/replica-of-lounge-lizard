@@ -5,7 +5,7 @@ import BookCoverDesignPage from "@/components/pages/BookCoverDesignPage";
 export default function BookCoverDesign() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
             <BookCoverDesignPage />
             <Footer />
         </>

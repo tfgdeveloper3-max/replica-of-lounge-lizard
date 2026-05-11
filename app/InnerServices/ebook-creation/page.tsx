@@ -5,7 +5,7 @@ import EbookCreationPage from "@/components/pages/EbookCreationPage";
 export default function EbookCreation() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
             <EbookCreationPage />
             <Footer />
         </>

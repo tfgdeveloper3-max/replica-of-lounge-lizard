@@ -6,8 +6,7 @@ import SEOContentWritingPage from "@/components/pages/SEOContentWritingPage";
 export default function SEOContentWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <SEOContentWritingPage />
 

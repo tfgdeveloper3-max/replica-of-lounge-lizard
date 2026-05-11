@@ -5,7 +5,7 @@ import AudiobookNarrationPage from "@/components/pages/AudiobookNarrationPage";
 export default function AudiobookNarration() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2/>
             <AudiobookNarrationPage />
             <Footer />
         </>

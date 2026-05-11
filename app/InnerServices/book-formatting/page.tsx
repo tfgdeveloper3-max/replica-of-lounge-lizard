@@ -5,7 +5,7 @@ import BookFormattingPage from "@/components/pages/BookFormattingPage";
 export default function BookFormatting() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
             <BookFormattingPage />
             <Footer />
         </>

@@ -6,7 +6,7 @@ import MemoirWritingPage from "@/components/pages/MemoirWritingPage";
 export default function MemoirWriting() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <MemoirWritingPage />
 

@@ -6,8 +6,7 @@ import FantasyWritingPage from "@/components/pages/FantasyWritingPage";
 export default function FantasyWriting() {
   return (
     <>
-      {/* isDay={false} for dark hero background */}
-      <Navbar2 isDay={false} />
+      <Navbar2 />
       
       <FantasyWritingPage />
       

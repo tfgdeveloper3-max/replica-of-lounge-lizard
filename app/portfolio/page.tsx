@@ -6,8 +6,7 @@ import PortfolioPage from "@/components/pages/PortfolioPage";
 export default function Portfolio() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <PortfolioPage />
 

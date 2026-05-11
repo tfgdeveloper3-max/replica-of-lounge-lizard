@@ -5,7 +5,7 @@ import ChildrensBookEditingPage from "@/components/pages/ChildrensBookEditingPag
 export default function ChildrensBookEditing() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
             <ChildrensBookEditingPage />
             <Footer />
         </>

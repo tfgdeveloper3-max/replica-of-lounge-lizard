@@ -6,8 +6,7 @@ import SciFiWritingPage from "@/components/pages/SciFiWritingPage";
 export default function SciFiWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <SciFiWritingPage />
 

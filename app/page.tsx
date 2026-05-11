@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/Aboutsection";
@@ -15,7 +14,6 @@ import Footer from "@/components/sections/Footer";
 
 
 export default function Home() {
-  const [isDay, setIsDay] = useState(true);
 
   return (
     <main>

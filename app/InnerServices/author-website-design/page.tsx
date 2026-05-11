@@ -5,7 +5,7 @@ import AuthorWebsiteDesignPage from "@/components/pages/AuthorWebsiteDesignPage"
 export default function AuthorWebsiteDesign() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2/>
             <AuthorWebsiteDesignPage />
             <Footer />
         </>

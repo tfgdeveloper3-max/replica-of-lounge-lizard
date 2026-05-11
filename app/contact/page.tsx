@@ -6,7 +6,7 @@ import ContactPage from "@/components/pages/ContactPage";
 export default function Contact() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <ContactPage />
 

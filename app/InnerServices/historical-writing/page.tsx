@@ -6,8 +6,7 @@ import HistoricalWritingPage from "@/components/pages/HistoricalWritingPage";
 export default function HistoricalWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <HistoricalWritingPage />
 

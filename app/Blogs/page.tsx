@@ -6,7 +6,7 @@ import BlogsPage from "@/components/pages/BlogsPage";
 export default function Blogs() {
   return (
     <>
-      <Navbar2 isDay={false} />
+      <Navbar2 />
       
       <BlogsPage />
       

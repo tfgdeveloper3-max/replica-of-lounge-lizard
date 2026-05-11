@@ -5,7 +5,7 @@ import BookPublishingPage from "@/components/pages/BookPublishingPage";
 export default function BookPublishing() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
             <BookPublishingPage />
             <Footer />
         </>

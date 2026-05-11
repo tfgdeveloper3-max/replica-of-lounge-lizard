@@ -6,7 +6,7 @@ import Navbar2 from "@/components/Navbar2";
 export default function About() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <AboutPage />
 

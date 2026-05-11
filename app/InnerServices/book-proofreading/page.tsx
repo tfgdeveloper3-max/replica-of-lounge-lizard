@@ -5,7 +5,7 @@ import BookProofReadingPage from "@/components/pages/BookProofReadingPage";
 export default function BookProofReading() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
             <BookProofReadingPage />
             <Footer />
         </>

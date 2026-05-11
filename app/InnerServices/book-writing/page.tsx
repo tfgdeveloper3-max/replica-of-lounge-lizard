@@ -6,7 +6,7 @@ import BookWritingPage from "@/components/pages/BookWritingPage";
 export default function BookWriting() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <BookWritingPage />
 
