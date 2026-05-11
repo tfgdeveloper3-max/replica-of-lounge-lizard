@@ -1,14 +1,10 @@
 "use client";
 import "@/lib/gsap-init";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import {
-    Phone,
-    Mail,
-    Sun,
-    Moon,
     Volume2,
     ArrowRight,
     Accessibility,
@@ -56,12 +52,7 @@ function useMagnetic() {
     return { x: springX, y: springY, handleMouse, handleLeave };
 }
 
-interface HeroSectionProps {
-    isDay: boolean;
-    onDayChange: (val: boolean) => void;
-}
-
-export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
+export default function HeroSection() {
     const headingRef = useRef<HTMLHeadingElement>(null);
     const leftBgRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -73,14 +64,11 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
     const spotlightX = useMotionValue(-1000);
     const spotlightY = useMotionValue(-1000);
 
-    // Dynamic HIGH-INTENSITY background glow color based on Day/Night mode
+    // Locked to Night mode (Cyan/Blue cool glow)
     const spotlightBg = useTransform(
         [spotlightX, spotlightY],
         ([x, y]) => {
-            const glowColor = isDay
-                ? `radial-gradient(600px circle at ${x}px ${y}px, rgba(255, 255, 220, 0.6), rgba(255, 160, 50, 0.3) 40%, transparent 70%)`
-                : `radial-gradient(600px circle at ${x}px ${y}px, rgba(200, 240, 255, 0.7), rgba(50, 50, 255, 0.3) 40%, transparent 70%)`;
-            return glowColor;
+            return `radial-gradient(600px circle at ${x}px ${y}px, rgba(200, 240, 255, 0.7), rgba(50, 50, 255, 0.3) 40%, transparent 70%)`;
         }
     );
 
@@ -136,7 +124,6 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
         const video = videoRef.current;
         if (!video) return;
 
-        // Safe play function to prevent AbortError on console
         const safePlay = () => {
             const p = video.play();
             if (p !== undefined) {
@@ -148,7 +135,6 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
             }
         };
 
-        // Handle tab visibility to prevent power-save/AbortError and save battery
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
                 if (video.paused) safePlay();
@@ -158,14 +144,12 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        // Initial setup: ensure it plays safely
         safePlay();
 
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, []); // No isDay dependency needed since video never changes
+    }, []);
 
     return (
         <section className="relative w-full h-screen overflow-hidden">
@@ -198,7 +182,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                         autoPlay
                         muted
-                        loop // Native HTML5 loop for seamless 1-minute restart
+                        loop
                         playsInline
                         className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
                     />
@@ -218,13 +202,13 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         spotlightX.set(-1000);
                     }}
                 >
-                    {/* Spotlight Cursor Glow Layer - Now inside content layer with mix-blend-mode */}
+                    {/* Spotlight Cursor Glow Layer */}
                     <motion.div
                         className="absolute inset-0 z-[2] pointer-events-none transition-opacity duration-300"
                         style={{
                             opacity: isHoveringLeft ? 1 : 0,
                             background: spotlightBg,
-                            mixBlendMode: "overlay", // Makes the glow blend beautifully with the red background
+                            mixBlendMode: "overlay",
                         }}
                     />
 
@@ -238,8 +222,8 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         <motion.h1
                             ref={headingRef}
                             animate={{
-                                scale: isHoveringLeft ? 1.06 : 1, // Increased zoom from 1.03 to 1.06
-                                filter: isHoveringLeft ? "brightness(1.3)" : "brightness(1)", // Text glows brighter
+                                scale: isHoveringLeft ? 1.06 : 1,
+                                filter: isHoveringLeft ? "brightness(1.3)" : "brightness(1)",
                             }}
                             transition={{ type: "spring", stiffness: 150, damping: 20 }}
                             className="font-black text-white leading-[1.0] tracking-tight mb-6 uppercase"
@@ -303,37 +287,13 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
 
                 {/* RIGHT content */}
                 <div className="relative h-full">
-                    {/* Day/Night label */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={isDay ? "day-label" : "night-label"}
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ duration: 0.3 }}
-                            className="absolute top-24 right-6 z-20 text-white/50 text-xs font-bold uppercase tracking-widest"
-                            style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
-                        >
-                            {isDay ? "Day" : "Night"}
-                        </motion.div>
-                    </AnimatePresence>
-
-                    {/* Bottom left: toggle + audio */}
+                    {/* Bottom left: audio only */}
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 1.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                         className="absolute bottom-7 left-7 flex items-center gap-3 z-20"
                     >
-                        <motion.button
-                            onClick={() => onDayChange(!isDay)}
-                            whileHover={{ scale: 1.15, borderColor: "rgba(255,255,255,0.8)" }}
-                            whileTap={{ scale: 0.9 }}
-                            title={isDay ? "Switch to Night" : "Switch to Day"}
-                            className="w-10 h-10 rounded-full border border-white/30 bg-black/40 backdrop-blur-sm flex items-center justify-center text-white transition-colors"
-                        >
-                            {isDay ? <Sun size={17} /> : <Moon size={17} />}
-                        </motion.button>
                         <motion.button
                             whileHover={{ scale: 1.15, borderColor: "rgba(255,255,255,0.8)" }}
                             whileTap={{ scale: 0.9 }}

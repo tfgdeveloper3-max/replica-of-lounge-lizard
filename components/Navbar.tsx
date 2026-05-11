@@ -74,11 +74,7 @@ const subVariants = {
     exit: { opacity: 0, x: -4, transition: { duration: 0.12 } },
 };
 
-interface NavbarProps {
-    isDay?: boolean;
-}
-
-export default function Navbar({ isDay = false }: NavbarProps) {
+export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeService, setActiveService] = useState<string>(servicesMenu[0].label);
@@ -103,11 +99,11 @@ export default function Navbar({ isDay = false }: NavbarProps) {
         servicesCloseTimer.current = setTimeout(() => setServicesOpen(false), 100);
     };
 
-    // ── Color logic ──
-    const navTextColor = scrolled ? "text-white" : isDay ? "text-black/80" : "text-white";
+    // ── Color logic (Locked to Night/Dark state) ──
+    const navTextColor = scrolled ? "text-white" : "text-white";
     const navHoverColor = scrolled ? "hover:text-black/80" : "hover:text-[#e8391d]";
-    const contactColor = scrolled ? "text-white/90" : isDay ? "text-black/80" : "text-white";
-    const chevronColor = scrolled ? "text-white/60" : isDay ? "text-black/40" : "text-white/40";
+    const contactColor = scrolled ? "text-white/90" : "text-white";
+    const chevronColor = scrolled ? "text-white/60" : "text-white/40";
 
     const activeLinks = servicesMenu.find((s) => s.label === activeService)?.links ?? [];
 
@@ -170,7 +166,6 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                     onMouseEnter={handleServicesEnter}
                                     onMouseLeave={handleServicesLeave}
                                 >
-                                    {/* Changed from button to 'a' tag for navigation */}
                                     <a
                                         href="/services"
                                         className={`flex items-center gap-1 px-3 py-2 font-semibold transition-colors duration-300 ${navTextColor} ${navHoverColor}`}
@@ -281,7 +276,7 @@ export default function Navbar({ isDay = false }: NavbarProps) {
 
                 {/* Mobile hamburger */}
                 <button
-                    className={`lg:hidden p-2 transition-colors ${scrolled || !isDay ? "text-white" : "text-black"}`}
+                    className="lg:hidden p-2 transition-colors text-white"
                     onClick={() => setMobileOpen((v) => !v)}
                 >
                     {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -303,13 +298,12 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                 if (item.label === "Services") {
                                     return (
                                         <li key="Services">
-                                            {/* Split Mobile Layout: Link on left, Toggle on right */}
                                             <div className="flex items-center border-b border-white/5">
                                                 <a
                                                     href="/services"
                                                     className="flex-1 text-left px-3 py-3 text-[14px] font-semibold text-white/85 hover:text-[#e8391d] transition-colors"
                                                     style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
-                                                    onClick={() => setMobileOpen(false)} // Close menu on navigation
+                                                    onClick={() => setMobileOpen(false)}
                                                 >
                                                     Services
                                                 </a>
@@ -349,14 +343,15 @@ export default function Navbar({ isDay = false }: NavbarProps) {
                                                                         >
                                                                             {srv.links.map((link) => (
                                                                                 <li key={link}>
-                                                                                    <a
-                                                                                        href="#"
+                                                                                    {/* FIXED: Made Mobile Links Workable */}
+                                                                                    <Link
+                                                                                        href={`/InnerServices/${slugify(link)}`}
                                                                                         className="block px-3 py-2 text-[12px] text-white/50 hover:text-[#e8391d] transition-colors"
                                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                                                                         onClick={() => setMobileOpen(false)}
                                                                                     >
                                                                                         {link}
-                                                                                    </a>
+                                                                                    </Link>
                                                                                 </li>
                                                                             ))}
                                                                         </motion.ul>
