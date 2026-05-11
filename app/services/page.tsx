@@ -5,7 +5,7 @@ import ServicesPage from "@/components/pages/ServicesPage";
 export default function Services() {
     return (
         <>
-            <Navbar2 isDay={false} />
+            <Navbar2 />
 
             <ServicesPage />
 
