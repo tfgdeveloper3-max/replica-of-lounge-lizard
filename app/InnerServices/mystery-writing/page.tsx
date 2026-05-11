@@ -6,7 +6,6 @@ import MysteryWritingPage from "@/components/pages/MysteryWritingPage";
 export default function MysteryWriting() {
     return (
         <>
-            {/* isDay={false} for dark hero background */}
             <Navbar2 />
 
             <MysteryWritingPage />
