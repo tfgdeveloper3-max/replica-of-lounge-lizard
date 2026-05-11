@@ -3,8 +3,8 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView, Variants } from "framer-motion";
 import Image from "next/image";
 import {
-    Search, ArrowRight, CheckCircle2, BarChart3, FileText, ShoppingCart,
-    BookOpen, PenTool, Minus, Plus, Phone, TrendingUp, Eye, Target
+    Film, ArrowRight, CheckCircle2, Tv, Video, Clapperboard,
+    BookOpen, PenTool, Minus, Plus, Phone, Users, Sparkles, LayoutGrid, Eye
 } from "lucide-react";
 
 // Safe TS Easing
@@ -27,29 +27,36 @@ const staggerContainer: Variants = {
 };
 
 // --- Data ---
-const contentTypes = [
-    { icon: FileText, title: "SEO Blog Posts", desc: "Data-driven, long-form articles that answer search intent and drive organic traffic." },
-    { icon: BookOpen, title: "Pillar Pages & Guides", desc: "Comprehensive, authoritative resources that establish your site as an industry hub." },
-    { icon: Target, title: "Website & Landing Page Copy", desc: "High-converting, keyword-optimized copy that turns visitors into customers." },
-    { icon: ShoppingCart, title: "E-Commerce Product Descriptions", desc: "Persuasive, SEO-friendly descriptions that rank and sell simultaneously." },
+const scriptTypes = [
+    { icon: Film, title: "Feature Films", desc: "Cinematic screenplays (90-120 pages) engineered for the big screen and box office success." },
+    { icon: Tv, title: "TV Pilots & Series", desc: "Pitch-ready pilots and show bibles designed to hook networks and streaming platforms." },
+    { icon: Video, title: "Short Films", desc: "Impactful, tight narratives that leave a lasting impression in under 20 minutes." },
+    { icon: Clapperboard, title: "Documentaries", desc: "Narrative-driven documentary scripts that weave facts into compelling visual stories." },
+];
+
+const architectureSteps = [
+    { num: "01", title: "Inciting Incident", desc: "The event that shatters the protagonist's normal world and kicks off the journey.", color: "#f87171" },
+    { num: "02", title: "Midpoint", desc: "The twist or reversal that raises the stakes and shifts the protagonist's approach.", color: "#fbbf24" },
+    { num: "03", title: "All Is Lost", desc: "The lowest point. The moment where all seems lost, forcing the final transformation.", color: "#60a5fa" },
+    { num: "04", title: "Climax & Resolution", desc: "The final confrontation and the new normal. The satisfying payoff for the audience.", color: "#4ade80" },
 ];
 
 const processSteps = [
-    { step: "01", title: "Search Intent Research", desc: "We analyze what your audience is actually searching for and the type of content Google rewards.", icon: Search },
-    { step: "02", title: "Keyword Mapping", desc: "Identifying high-volume, low-difficulty keywords and mapping them to your content strategy.", icon: Target },
-    { step: "03", title: "Expert Writing", desc: "Human writers craft engaging, E-E-A-T compliant content that satisfies both bots and humans.", icon: PenTool },
-    { step: "04", title: "On-Page Optimization", desc: "Optimizing headers, meta tags, internal links, and readability for maximum SERP visibility.", icon: TrendingUp },
+    { step: "01", title: "Logline & Pitch", desc: "Distilling your 2-hour movie into a single compelling sentence that sells the concept.", icon: Sparkles },
+    { step: "02", title: "Beat Sheet", desc: "Mapping the entire story structure beat-by-beat before writing a single line of dialogue.", icon: LayoutGrid },
+    { step: "03", title: "Visual Drafting", desc: "Writing action lines that paint a picture. Show, don't tell. Creating subtext in dialogue.", icon: Eye },
+    { step: "04", title: "Industry Polish", desc: "Formatting to Hollywood standards (Final Draft/Courier 12pt) and tightening the pace.", icon: PenTool },
 ];
 
 const faqs = [
-    { q: "Is SEO content just about stuffing keywords?", a: "Absolutely not. Keyword stuffing can get your site penalized by Google. Modern SEO content is about satisfying 'Search Intent'—giving the reader exactly what they are looking for in an engaging, well-structured format, while naturally incorporating keywords." },
-    { q: "Do you use AI to write your SEO content?", a: "We use AI as a research and outlining tool, but all final writing is 100% human. Google's Helpful Content Update prioritizes human experience (E-E-A-T). AI-generated content often lacks the nuance and depth required to rank for competitive terms." },
-    { q: "How long does it take for SEO content to rank?", a: "SEO is a long-term strategy. While some low-competition keywords can rank within weeks, competitive terms typically take 3-6 months to see significant movement. We focus on quick wins while building long-term authority." },
-    { q: "What is E-E-A-T and why does it matter?", a: "E-E-A-T stands for Experience, Expertise, Authoritativeness, and Trustworthiness. It's Google's framework for evaluating content quality. Our writers ensure every piece of content demonstrates genuine expertise to pass Google's quality rater guidelines." },
-    { q: "Can you write content for my specific niche?", a: "Yes. We have a vast network of specialist writers across industries—from legal and SaaS to health and finance. We match your project with a writer who has actual industry experience." },
+    { q: "Do I need special software to write a script?", a: "Yes. Industry standard requires specific formatting (Courier 12pt, specific margins, sluglines). We write in Final Draft and Fade In, and deliver files in .fdx and .pdf formats that are ready for production or submission." },
+    { q: "What is the difference between a script and a book?", a: "A book tells the story; a script is a blueprint for a visual experience. In a book, you describe what a character thinks. In a script, you must show what they do and say so the audience infers what they think. It's the art of 'Show, Don't Tell'." },
+    { q: "How long should a feature film script be?", a: "Generally, 90 to 120 pages. One page roughly equals one minute of screen time. If your script is 150 pages, it's likely overwritten or pacing is too slow. We ensure your script is tight and hits the standard page count." },
+    { q: "Can you write a TV show bible along with the pilot?", a: "Absolutely. In today's TV market, a pilot alone isn't enough. We create comprehensive show bibles that outline the first season, character arcs, and the long-term vision to sell to producers." },
+    { q: "How do you write dialogue that sounds natural?", a: "By reading it out loud and cutting the fat. Great dialogue has subtext—characters rarely say exactly what they mean. We write with rhythm, distinct voices for each character, and ensure the visuals do the heavy lifting." },
 ];
 
-export default function SEOContentWritingPage() {
+export default function ScriptWritingPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
     const overviewRef = useRef<HTMLDivElement>(null);
     const overviewInView = useInView(overviewRef, { once: true, margin: "-100px" });
@@ -58,32 +65,32 @@ export default function SEOContentWritingPage() {
         <main className="w-full overflow-hidden" style={{ fontFamily: "'Raleway', Arial, sans-serif" }}>
 
             {/* ════════════════════════════════════════════
-                SECTION 1: CINEMATIC SEO HERO
+                SECTION 1: CINEMATIC SCRIPTWRITING HERO
             ════════════════════════════════════════════ */}
             <section className="relative w-full min-h-screen flex items-center justify-center bg-[#05070f] overflow-hidden pt-28 pb-12">
                 <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: `url('/images/Left-Section_bg.webp')`, backgroundSize: "40px 40px" }} />
-                <div className="absolute top-1/3 right-1/4 w-[900px] h-[600px] bg-[#e8391d] opacity-10 rounded-full blur-[180px] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#e8391d] opacity-10 rounded-full blur-[200px] pointer-events-none" />
 
                 <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="flex items-center justify-center gap-3 mb-6">
-                        <TrendingUp size={16} className="text-[#e8391d]" />
-                        <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">SEO Content Writing</span>
+                        <Clapperboard size={16} className="text-[#e8391d]" />
+                        <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Scriptwriting Services</span>
                     </motion.div>
 
                     <motion.h1 variants={maskReveal} initial="hidden" animate="visible" className="font-black text-white uppercase leading-[0.95] mb-8" style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}>
-                        RANK HIGHER. <br /><span className="text-[#e8391d]">SELL MORE.</span>
+                        WRITTEN FOR <br /><span className="text-[#e8391d]">THE SCREEN.</span>
                     </motion.h1>
 
                     <motion.p variants={fadeUp} initial="hidden" animate="visible" className="text-white/60 leading-[1.85] max-w-2xl mx-auto mb-10" style={{ fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)" }}>
-                        Stop writing for robots. We craft human-first, search-optimized content that satisfies Google’s algorithms and turns your organic traffic into paying customers.
+                        A script isn't just a story—it's a blueprint for a visual experience. We craft screenplays with industry-standard formatting, compelling subtext, and pacing that keeps audiences glued to the screen.
                     </motion.p>
 
                     <motion.div variants={fadeUp} initial="hidden" animate="visible" className="flex flex-wrap justify-center gap-4">
-                        <motion.a href="#overview" whileHover={{ backgroundColor: "#b45309", gap: "14px", boxShadow: "0 10px 40px rgba(217, 119, 6, 0.4)" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 bg-[#e8391d] text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] cursor-pointer transition-all">
+                        <motion.a href="#overview" whileHover={{ backgroundColor: "#4f46e5", gap: "14px", boxShadow: "0 10px 40px rgba(99, 102, 241, 0.4)" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 bg-[#e8391d] text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] cursor-pointer transition-all">
                             Learn More <ArrowRight size={16} />
                         </motion.a>
                         <motion.a href="/contact" whileHover={{ borderColor: "#e8391d", color: "#e8391d" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] cursor-pointer transition-all">
-                            Get A Free Quote
+                            Pitch Your Idea
                         </motion.a>
                     </motion.div>
                 </div>
@@ -99,22 +106,22 @@ export default function SEOContentWritingPage() {
                     <motion.div variants={staggerContainer} initial="hidden" animate={overviewInView ? "visible" : "hidden"} className="flex flex-col">
                         <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4">
                             <span className="w-8 h-[2px] bg-[#e8391d]" />
-                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Human-First, Algorithm-Friendly</span>
+                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Visual Storytelling</span>
                         </motion.div>
 
                         <motion.h2 variants={fadeUp} className="font-black text-black uppercase leading-[1.05] mb-6" style={{ fontSize: "clamp(2rem, 3.8vw, 3.2rem)" }}>
-                            CONTENT THAT RANKS, <span className="text-[#e8391d]">COPY THAT CONVERTS.</span>
+                            SHOW, DON'T TELL. <span className="text-[#e8391d]">THAT'S THE RULE.</span>
                         </motion.h2>
 
                         <motion.p variants={fadeUp} className="text-gray-500 leading-[1.85] mb-5" style={{ fontSize: "0.95rem" }}>
-                            Google’s Helpful Content Update changed the game. Thin, keyword-stuffed articles no longer rank. Today, it’s about demonstrating E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) while matching exact search intent.
+                            Writing a novel is about describing thoughts; writing a script is about describing actions. If the audience can't see it or hear it, it doesn't belong on the page.
                         </motion.p>
                         <motion.p variants={fadeUp} className="text-gray-500 leading-[1.85] mb-8" style={{ fontSize: "0.95rem" }}>
-                            Our SEO writers don’t just write for search bots—they write compelling, well-researched content for humans, strategically optimized to signal relevance to Google without sacrificing readability.
+                            Our screenwriters are trained in the art of visual economy. We craft crisp action lines, subtext-heavy dialogue, and beat sheets that ensure your story moves at the relentless pace required by film and television.
                         </motion.p>
 
                         <motion.div variants={staggerContainer} className="flex flex-col gap-4">
-                            {["100% Human-Written (E-E-A.T Compliant)", "Search Intent Focused Strategy", "On-Page SEO & Internal Linking Included", "Conversion-Driven Formatting"].map((item) => (
+                            {["Industry-Standard Formatting (Final Draft)", "Compelling Subtext in Dialogue", "Rigorous Beat Sheet Architecture", "Pitch-Ready Loglines & Synopses"].map((item) => (
                                 <motion.div key={item} variants={fadeUp} className="flex items-center gap-3 group">
                                     <CheckCircle2 size={18} className="text-[#e8391d] shrink-0" />
                                     <span className="text-black/80 font-semibold text-[14px]">{item}</span>
@@ -125,7 +132,7 @@ export default function SEOContentWritingPage() {
 
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={overviewInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.8, ease: smoothEase }} className="relative hidden lg:block">
                         <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/20" style={{ aspectRatio: "4/5" }}>
-                            <Image src="/images/seo-content-overview.webp" alt="SEO Content Writing Service" fill className="object-cover" />
+                            <Image src="/images/scriptwriting-overview.webp" alt="Scriptwriting Service" fill className="object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                         </div>
                         <div className="absolute -bottom-5 -left-5 w-full h-full rounded-3xl border-[3px] border-[#e8391d]/20 -z-10" />
@@ -134,31 +141,66 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 3: TYPES OF SEO CONTENT
+                SECTION 3: UNIQUE - SCREENPLAY ARCHITECTURE
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#05070f] py-32 overflow-hidden">
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `radial-gradient(#fff 1px, transparent 1px)`, backgroundSize: "30px 30px" }} />
 
-                <div className="max-w-[1200px] mx-auto px-8 lg:px-16 relative z-10">
-                    <div className="text-center mb-16 overflow-hidden">
+                <div className="max-w-[1100px] mx-auto px-8 lg:px-16 relative z-10">
+                    <div className="text-center mb-20 overflow-hidden">
                         <motion.div initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} className="flex items-center justify-center gap-3 mb-4">
-                            <BarChart3 size={16} className="text-[#e8391d]" />
-                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Content Types</span>
+                            <LayoutGrid size={16} className="text-[#e8391d]" />
+                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">The Blueprint</span>
                         </motion.div>
                         <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-white uppercase leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-                            CONTENT THAT <span className="text-[#e8391d]">DRIVES TRAFFIC</span>
+                            SCREENPLAY <span className="text-[#e8391d]">STRUCTURE</span>
+                        </motion.h2>
+                        <p className="text-white/40 max-w-lg mx-auto mt-4 text-[14px] leading-relaxed">Every great film follows a structural logic. We engineer your script using the Beat Sheet method.</p>
+                    </div>
+
+                    {/* Horizontal Structure Flow */}
+                    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+                        {/* Connecting line for desktop */}
+                        <div className="hidden lg:block absolute top-12 left-[12%] right-[12%] h-[2px] bg-white/10 z-0" />
+
+                        {architectureSteps.map(({ num, title, desc, color }) => (
+                            <motion.div
+                                key={title}
+                                variants={fadeUp}
+                                className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-500 group cursor-default backdrop-blur-sm z-10 text-center"
+                            >
+                                {/* Top Accent Dot */}
+                                <div className="w-5 h-5 rounded-full mx-auto mb-6 border-4 border-[#05070f]" style={{ backgroundColor: color }} />
+
+                                <span className="text-[11px] font-bold uppercase tracking-widest mb-2 block" style={{ color: color }}>{num}</span>
+                                <h3 className="font-black text-white uppercase text-xl mb-3 tracking-wide">{title}</h3>
+                                <p className="text-white/50 text-[13px] leading-relaxed">{desc}</p>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* ════════════════════════════════════════════
+                SECTION 4: SCRIPT CATEGORIES
+            ════════════════════════════════════════════ */}
+            <section className="relative w-full bg-[#faf9f7] py-32 overflow-hidden">
+                <div className="max-w-[1200px] mx-auto px-8 lg:px-16">
+                    <div className="text-center mb-16 overflow-hidden">
+                        <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-black uppercase leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+                            SCRIPTS WE <span className="text-[#e8391d]">PRODUCE</span>
                         </motion.h2>
                     </div>
 
                     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {contentTypes.map(({ icon: Icon, title, desc }) => (
-                            <motion.div key={title} variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:border-[#e8391d]/50 transition-all duration-500 group cursor-default flex gap-6 items-start">
+                        {scriptTypes.map(({ icon: Icon, title, desc }) => (
+                            <motion.div key={title} variants={fadeUp} className="bg-white border border-gray-200 rounded-2xl p-8 hover:border-[#e8391d]/50 hover:shadow-xl transition-all duration-500 group cursor-default flex gap-6 items-start">
                                 <div className="w-14 h-14 rounded-xl bg-[#e8391d]/10 flex items-center justify-center shrink-0 group-hover:bg-[#e8391d] transition-colors duration-300">
                                     <Icon size={26} className="text-[#e8391d] group-hover:text-white transition-colors duration-300" />
                                 </div>
                                 <div>
-                                    <h3 className="font-black text-white uppercase text-lg mb-2 tracking-wide">{title}</h3>
-                                    <p className="text-white/50 text-[14px] leading-relaxed">{desc}</p>
+                                    <h3 className="font-black text-black uppercase text-lg mb-2 tracking-wide">{title}</h3>
+                                    <p className="text-gray-500 text-[14px] leading-relaxed">{desc}</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -167,84 +209,83 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 4: THE SEO WRITING PROCESS
-            ════════════════════════════════════════════ */}
-            <section className="relative w-full bg-[#faf9f7] py-32 overflow-hidden">
-                <div className="max-w-[1200px] mx-auto px-8 lg:px-16">
-                    <div className="text-center mb-20">
-                        <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-black uppercase leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-                            OUR SEO <span className="text-[#e8391d]">PROCESS</span>
-                        </motion.h2>
-                    </div>
-
-                    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-                        <div className="hidden lg:block absolute top-8 left-[12%] right-[12%] h-[2px] bg-gray-200 z-0" />
-
-                        {processSteps.map(({ step, title, desc, icon: Icon }) => (
-                            <motion.div key={step} variants={fadeUp} className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-16 h-16 rounded-full bg-[#e8391d] flex items-center justify-center mb-6 shadow-lg shadow-[#e8391d]/20 border-4 border-[#faf9f7]">
-                                    <Icon size={24} className="text-white" />
-                                </div>
-                                <span className="text-[#e8391d] font-black text-sm tracking-widest mb-2">{step}</span>
-                                <h3 className="font-black text-black uppercase text-lg mb-3 tracking-wide">{title}</h3>
-                                <p className="text-gray-500 text-[14px] leading-relaxed max-w-[250px]">{desc}</p>
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* ════════════════════════════════════════════
-                SECTION 5: WHY CHOOSE OUR SEO WRITERS
+                SECTION 5: THE WRITING PROCESS
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#111] py-32 overflow-hidden">
                 <div className="max-w-[1200px] mx-auto px-8 lg:px-16 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                    <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
-                        <div className="rounded-3xl overflow-hidden shadow-2xl" style={{ aspectRatio: "1/1" }}>
-                            <Image src="/images/seo-team.webp" alt="SEO Content Team" fill className="object-cover" />
-                            <div className="absolute inset-0 bg-[#e8391d]/20 mix-blend-multiply" />
-                        </div>
-                        <div className="absolute -bottom-5 -right-5 w-full h-full rounded-3xl border-[3px] border-[#e8391d]/25 -z-0" />
-                    </motion.div>
-
                     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
                         <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4">
                             <span className="w-8 h-[2px] bg-[#e8391d]" />
-                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Why Bexley?</span>
+                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Our Process</span>
                         </motion.div>
 
-                        <motion.h2 variants={fadeUp} className="font-black text-white uppercase leading-[1.05] mb-10" style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}>
-                            WRITERS WHO <br /><span className="text-[#e8391d]">UNDERSTAND THE ALGORITHM.</span>
+                        <motion.h2 variants={fadeUp} className="font-black text-white uppercase leading-[1.05] mb-6" style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}>
+                            FROM IDEA TO <br /><span className="text-[#e8391d]">GREENLIGHT.</span>
                         </motion.h2>
 
-                        <motion.div variants={staggerContainer} className="flex flex-col gap-5">
-                            {[
-                                "100% Human-Written — We never use AI to generate final drafts.",
-                                "E-E-A.T Focused — Content that passes Google's quality rater tests.",
-                                "Search Intent Masters — We write what people actually want to read.",
-                                "Conversion-Driven — Traffic is useless without conversions. We optimize for both.",
-                                "Industry Specialists — Niche writers who know your subject matter."
-                            ].map((item) => (
-                                <motion.div key={item} variants={fadeUp} className="flex items-start gap-4 group">
-                                    <div className="mt-1 w-6 h-6 rounded-full bg-[#e8391d]/10 flex items-center justify-center shrink-0 group-hover:bg-[#e8391d] transition-colors duration-300">
-                                        <CheckCircle2 size={14} className="text-[#e8391d] group-hover:text-white transition-colors" />
+                        <motion.p variants={fadeUp} className="text-white/60 leading-[1.85] mb-10" style={{ fontSize: "0.95rem" }}>
+                            Screenwriting is architecture. We don't just write scenes; we engineer emotional journeys that translate perfectly to the screen.
+                        </motion.p>
+
+                        <motion.div variants={staggerContainer} className="flex flex-col gap-8">
+                            {processSteps.map(({ step, title, desc, icon: Icon }) => (
+                                <motion.div key={step} variants={fadeUp} className="flex gap-5 items-start group">
+                                    <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-[#e8391d] group-hover:border-[#e8391d] transition-colors duration-300">
+                                        <Icon size={20} className="text-white/60 group-hover:text-white transition-colors duration-300" />
                                     </div>
-                                    <p className="text-white/60 text-[15px] leading-relaxed">{item}</p>
+                                    <div>
+                                        <h4 className="font-black text-white uppercase tracking-wider mb-1">{step} — {title}</h4>
+                                        <p className="text-white/40 text-[13px] leading-relaxed">{desc}</p>
+                                    </div>
                                 </motion.div>
                             ))}
                         </motion.div>
                     </motion.div>
+
+                    <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative hidden lg:block">
+                        <div className="rounded-3xl overflow-hidden shadow-2xl" style={{ aspectRatio: "1/1" }}>
+                            <Image src="/images/scriptwriting-team.webp" alt="Scriptwriters" fill className="object-cover" />
+                            <div className="absolute inset-0 bg-[#e8391d]/20 mix-blend-multiply" />
+                        </div>
+                        <div className="absolute -bottom-5 -left-5 w-full h-full rounded-3xl border-[3px] border-[#e8391d]/25 -z-0" />
+                    </motion.div>
                 </div>
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 6: SERVICE FAQS
+                SECTION 6: WHY CHOOSE OUR SCREENWRITERS
+            ════════════════════════════════════════════ */}
+            <section className="relative w-full bg-[#05070f] py-32 overflow-hidden">
+                <div className="max-w-[1200px] mx-auto px-8 lg:px-16 relative z-10">
+                    <div className="text-center mb-16">
+                        <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-white uppercase leading-none" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+                            WHY CHOOSE <span className="text-[#e8391d]">BEXLEY?</span>
+                        </motion.h2>
+                    </div>
+
+                    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[
+                            { title: "Format Purists", desc: "We deliver scripts in strict industry-standard formatting. No amateur mistakes." },
+                            { title: "Visual Writers", desc: "We write action lines that directors want to shoot and actors want to perform." },
+                            { title: "Pitch Ready", desc: "We don't just write the script; we craft the logline and synopsis you need to sell it." },
+                        ].map(({ title, desc }) => (
+                            <motion.div key={title} variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 text-center hover:border-[#e8391d]/50 transition-colors duration-500">
+                                <h3 className="font-black text-white uppercase text-lg mb-3 tracking-wide">{title}</h3>
+                                <p className="text-white/50 text-[14px] leading-relaxed">{desc}</p>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* ════════════════════════════════════════════
+                SECTION 7: SERVICE FAQS
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#faf9f7] py-32 overflow-hidden">
                 <div className="max-w-[900px] mx-auto px-8 relative z-10">
                     <div className="text-center mb-16">
                         <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-black uppercase leading-none" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-                            SEO CONTENT <span className="text-[#e8391d]">FAQS</span>
+                            SCRIPTWRITING <span className="text-[#e8391d]">FAQS</span>
                         </motion.h2>
                     </div>
 
@@ -273,21 +314,21 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 7: MASSIVE CTA
+                SECTION 8: MASSIVE CTA
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#e8391d] py-28 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `url('/images/Left-Section_bg.webp')`, backgroundSize: "40px 40px" }} />
 
                 <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="max-w-4xl mx-auto text-center px-8 relative z-10">
                     <h2 className="font-black text-white uppercase leading-tight mb-6" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-                        DOMINATE THE SEARCH RESULTS.
+                        LIGHTS. CAMERA. ACTION.
                     </h2>
                     <p className="text-white/80 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-                        Stop losing customers to competitors with worse products but better SEO. Let's fix that today.
+                        Your story deserves to be seen on the screen. Let’s write the script that gets the greenlight.
                     </p>
                     <div className="flex flex-wrap justify-center gap-5">
                         <motion.a href="/contact" whileHover={{ backgroundColor: "#fff", color: "#e8391d", gap: "14px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 bg-black text-white font-black uppercase tracking-widest px-10 py-5 rounded-xl text-[14px] cursor-pointer transition-all duration-300">
-                            Get an SEO Strategy <ArrowRight size={18} />
+                            Start Your Script <ArrowRight size={18} />
                         </motion.a>
                         <motion.a href="tel:18884440110" whileHover={{ gap: "14px" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-10 py-5 rounded-xl text-[14px] cursor-pointer transition-all duration-300">
                             <Phone size={16} /> Call Us Now

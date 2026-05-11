@@ -1,16 +1,61 @@
 "use client";
 import { useRef } from "react";
 import { motion, useInView, Variants } from "framer-motion";
-import { ArrowRight, Phone, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Phone, Mail } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Safe TS Easing
 const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-const writing = ["Book Writing", "Ghostwriting", "Fiction Writing", "Non-Fiction Writing", "Children's Book Writing", "Memoir & Biography", "Script Writing"];
-const editing = ["Book Editing", "Book Proofreading", "Children's Book Editing", "Ebook Creation", "Audiobook Narration", "Book Formatting", "Book Publishing"];
-const design = ["Book Cover Design", "Author Website Design", "Book Printing", "Book Marketing", "Amazon Optimization", "Launch Campaigns"];
-const company = ["About Us", "Our Portfolio", "Blogs & Insights", "Pricing Plans", "Contact Us", "Privacy Policy", "Terms of Use"];
+// ── Slugify (matches Navbar) ──
+const slugify = (str: string) =>
+    str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+// ── Service Links (matches Navbar servicesMenu exactly) ──
+const writingServices = [
+    "Book Writing",
+    "Ghostwriting",
+    "Children's Book Writing",
+    "Sci-Fi Writing",
+    "Memoir Writing",
+    "Fiction Writing",
+    "SEO Content Writing",
+    "Mystery Writing",
+    "Historical Writing",
+    "Fantasy Writing",
+    "Non-Fiction Writing",
+    "Script Writing",
+    "Horror Writing",
+];
+
+const editingServices = [
+    "Book Proofreading",
+    "Book Editing",
+    "Ebook Creation",
+    "Audiobook Narration",
+    "Book Formatting",
+    "Children's Book Editing",
+    "Book Publishing",
+];
+
+const designServices = [
+    "Book Cover Design",
+    "Author Website Design",
+    "Book Printing",
+    "Book Marketing",
+];
+
+// ── Company Links (matches Navbar navItems) ──
+const companyLinks = [
+    { label: "About Us", href: "/about" },
+    { label: "Portfolio", href: "/portfolio" },
+    { label: "Blogs & Insights", href: "/Blogs" },
+    { label: "Pricing Plans", href: "/pricing" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Use", href: "/terms-of-use" },
+];
 
 const socials = [
     { label: "FB", path: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" },
@@ -19,7 +64,7 @@ const socials = [
     { label: "X", path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.254 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
 ];
 
-const lCls = "text-white/40 hover:text-white transition-colors duration-200 text-[13px] leading-[2.1]";
+const lCls = "text-white/40 hover:text-white hover:pl-1 transition-all duration-200 text-[13px] leading-[2.1] block";
 const hCls = "font-black text-white uppercase text-[11px] tracking-[0.2em] mb-4";
 
 // --- Animation Variants ---
@@ -47,7 +92,6 @@ const linkStagger: Variants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.04 } },
 };
-
 
 export default function Footer() {
     const footerRef = useRef<HTMLElement>(null);
@@ -86,17 +130,12 @@ export default function Footer() {
                             LET'S BRING YOUR BOOK TO LIFE.
                         </motion.h3>
                     </div>
-                    <motion.a
-                        href="#"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ delay: 0.8, duration: 0.6 }}
-                        whileHover={{ backgroundColor: "rgba(0,0,0,0.15)", gap: "14px" }}
-                        whileTap={{ scale: 0.97 }}
-                        className="shrink-0 inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 text-[12px] transition-all cursor-pointer"
+                    <Link
+                        href="/contact"
+                        className="shrink-0 inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 text-[12px] hover:bg-white/15 hover:gap-[14px] transition-all cursor-pointer"
                     >
                         Get a Free Proposal <ArrowRight size={15} />
-                    </motion.a>
+                    </Link>
                 </div>
             </motion.div>
 
@@ -132,7 +171,7 @@ export default function Footer() {
                                 <Phone size={13} className="text-[#e8391d] shrink-0" />
                                 1-888-444-0110
                             </a>
-                            <a href="mailto:sales@oakmontpublications.com" className="flex items-center gap-2 text-white/40 hover:text-white text-[12px] transition-colors">
+                            <a href="mailto:sales@bexleypublications.com" className="flex items-center gap-2 text-white/40 hover:text-white text-[12px] transition-colors">
                                 <Mail size={13} className="text-[#e8391d] shrink-0" />
                                 sales@bexleypublications.com
                             </a>
@@ -167,23 +206,62 @@ export default function Footer() {
 
                     {/* RIGHT: 4-col cascading links */}
                     <motion.div variants={staggerContainer} className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[
-                            { title: "Writing", items: writing },
-                            { title: "Editing", items: editing },
-                            { title: "Design", items: design },
-                            { title: "Company", items: company },
-                        ].map((col) => (
-                            <motion.div key={col.title} variants={fadeUp}>
-                                <p className={hCls}>{col.title}</p>
-                                <motion.ul variants={linkStagger} initial="hidden" animate="visible">
-                                    {col.items.map((l) => (
-                                        <motion.li key={l} variants={fadeUp}>
-                                            <a href="#" className={lCls}>{l}</a>
-                                        </motion.li>
-                                    ))}
-                                </motion.ul>
-                            </motion.div>
-                        ))}
+
+                        {/* Writing Services Column */}
+                        <motion.div variants={fadeUp}>
+                            <p className={hCls}>Writing Services</p>
+                            <motion.ul variants={linkStagger} initial="hidden" animate="visible">
+                                {writingServices.map((link) => (
+                                    <motion.li key={link} variants={fadeUp}>
+                                        <Link href={`/InnerServices/${slugify(link)}`} className={lCls}>
+                                            {link}
+                                        </Link>
+                                    </motion.li>
+                                ))}
+                            </motion.ul>
+                        </motion.div>
+
+                        {/* Editing & Publishing Column */}
+                        <motion.div variants={fadeUp}>
+                            <p className={hCls}>Editing & Publishing</p>
+                            <motion.ul variants={linkStagger} initial="hidden" animate="visible">
+                                {editingServices.map((link) => (
+                                    <motion.li key={link} variants={fadeUp}>
+                                        <Link href={`/InnerServices/${slugify(link)}`} className={lCls}>
+                                            {link}
+                                        </Link>
+                                    </motion.li>
+                                ))}
+                            </motion.ul>
+                        </motion.div>
+
+                        {/* Design, Printing & Marketing Column */}
+                        <motion.div variants={fadeUp}>
+                            <p className={hCls}>Design & Marketing</p>
+                            <motion.ul variants={linkStagger} initial="hidden" animate="visible">
+                                {designServices.map((link) => (
+                                    <motion.li key={link} variants={fadeUp}>
+                                        <Link href={`/InnerServices/${slugify(link)}`} className={lCls}>
+                                            {link}
+                                        </Link>
+                                    </motion.li>
+                                ))}
+                            </motion.ul>
+                        </motion.div>
+
+                        {/* Company Column */}
+                        <motion.div variants={fadeUp}>
+                            <p className={hCls}>Company</p>
+                            <motion.ul variants={linkStagger} initial="hidden" animate="visible">
+                                {companyLinks.map((item) => (
+                                    <motion.li key={item.label} variants={fadeUp}>
+                                        <Link href={item.href} className={lCls}>
+                                            {item.label}
+                                        </Link>
+                                    </motion.li>
+                                ))}
+                            </motion.ul>
+                        </motion.div>
                     </motion.div>
                 </div>
             </motion.div>
@@ -200,9 +278,14 @@ export default function Footer() {
                         © 2026 Bexley Publications LLC. All Rights Reserved.
                     </p>
                     <div className="flex items-center gap-5">
-                        {["Privacy Policy", "Terms of Use", "Refund Policy", "Sitemap"].map((l) => (
-                            <a key={l} href="#" className="text-white/25 hover:text-white text-[12px] transition-colors">{l}</a>
+                        {companyLinks.filter((l) => ["Privacy Policy", "Terms of Use"].includes(l.label)).map((item) => (
+                            <Link key={item.label} href={item.href} className="text-white/25 hover:text-white text-[12px] transition-colors">
+                                {item.label}
+                            </Link>
                         ))}
+                        <Link href="/sitemap" className="text-white/25 hover:text-white text-[12px] transition-colors">
+                            Sitemap
+                        </Link>
                     </div>
                 </div>
             </motion.div>

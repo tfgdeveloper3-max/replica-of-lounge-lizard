@@ -77,11 +77,9 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
     const spotlightBg = useTransform(
         [spotlightX, spotlightY],
         ([x, y]) => {
-            // Intense Daylight: Golden/White core with warm spread
-            // Intense Nightlight: Cyan/White core with cool spread
-            const glowColor = isDay 
-                ? 'radial-gradient(600px circle at ${x}px ${y}px, rgba(255, 255, 220, 0.6), rgba(255, 160, 50, 0.3) 40%, transparent 70%)' 
-                : 'radial-gradient(600px circle at ${x}px ${y}px, rgba(200, 240, 255, 0.7), rgba(50, 50, 255, 0.3) 40%, transparent 70%)';
+            const glowColor = isDay
+                ? `radial-gradient(600px circle at ${x}px ${y}px, rgba(255, 255, 220, 0.6), rgba(255, 160, 50, 0.3) 40%, transparent 70%)`
+                : `radial-gradient(600px circle at ${x}px ${y}px, rgba(200, 240, 255, 0.7), rgba(50, 50, 255, 0.3) 40%, transparent 70%)`;
             return glowColor;
         }
     );
@@ -133,26 +131,41 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
         return () => ctx.revert();
     }, []);
 
-    // Custom 20-Second Delayed Video Loop
+    // Simplified Video Loop & Visibility Management
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
 
-        const handleVideoEnd = () => {
-            setTimeout(() => {
-                if (video) {
-                    video.currentTime = 0;
-                    video.play().catch(e => console.error("Video play error:", e));
-                }
-            }, 20000);
+        // Safe play function to prevent AbortError on console
+        const safePlay = () => {
+            const p = video.play();
+            if (p !== undefined) {
+                p.catch(error => {
+                    if (error.name !== 'AbortError') {
+                        console.error("Video play error:", error);
+                    }
+                });
+            }
         };
 
-        video.addEventListener('ended', handleVideoEnd);
+        // Handle tab visibility to prevent power-save/AbortError and save battery
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                if (video.paused) safePlay();
+            } else {
+                video.pause();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        // Initial setup: ensure it plays safely
+        safePlay();
 
         return () => {
-            video.removeEventListener('ended', handleVideoEnd);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [isDay]);
+    }, []); // No isDay dependency needed since video never changes
 
     return (
         <section className="relative w-full h-screen overflow-hidden">
@@ -175,23 +188,20 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                     />
                 </div>
 
-                {/* RIGHT — Dark video */}
+                {/* RIGHT — Dark video (Locked to Night) */}
                 <div className="relative bg-[#05070f] overflow-hidden h-full">
-                    <AnimatePresence mode="wait">
-                        <motion.video
-                            ref={videoRef}
-                            key={isDay ? "day-video" : "night-video"}
-                            src={isDay ? "/video/BexleyDay.mp4" : "/video/BexleyNight.mp4"}
-                            initial={{ opacity: 0, scale: 1.1 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                            autoPlay
-                            muted
-                            playsInline
-                            className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
-                        />
-                    </AnimatePresence>
+                    <motion.video
+                        ref={videoRef}
+                        src="/video/BexleyNight.mp4"
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                        autoPlay
+                        muted
+                        loop // Native HTML5 loop for seamless 1-minute restart
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none" />
                 </div>
             </div>
@@ -199,7 +209,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
             {/* ── Content layer ── */}
             <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-[2fr_3fr] pt-0">
                 {/* LEFT content - Spotlight Moved Here for better Z-index */}
-                <div 
+                <div
                     className="relative flex flex-col px-10 lg:px-14 pb-10 pt-32 lg:pt-40 h-full"
                     onMouseMove={handleLeftMouseMove}
                     onMouseEnter={() => setIsHoveringLeft(true)}
@@ -227,7 +237,7 @@ export default function HeroSection({ isDay, onDayChange }: HeroSectionProps) {
                         {/* Heading - Enhanced Zoom & Brightness Effect */}
                         <motion.h1
                             ref={headingRef}
-                            animate={{ 
+                            animate={{
                                 scale: isHoveringLeft ? 1.06 : 1, // Increased zoom from 1.03 to 1.06
                                 filter: isHoveringLeft ? "brightness(1.3)" : "brightness(1)", // Text glows brighter
                             }}

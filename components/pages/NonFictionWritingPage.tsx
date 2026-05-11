@@ -3,8 +3,8 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView, Variants } from "framer-motion";
 import Image from "next/image";
 import {
-    Search, ArrowRight, CheckCircle2, BarChart3, FileText, ShoppingCart,
-    BookOpen, PenTool, Minus, Plus, Phone, TrendingUp, Eye, Target
+    BookOpen, ArrowRight, CheckCircle2, BarChart3, Lightbulb, Heart,
+    PenTool, Minus, Plus, Phone, Users, Search, Brain, Target, TrendingUp
 } from "lucide-react";
 
 // Safe TS Easing
@@ -27,29 +27,36 @@ const staggerContainer: Variants = {
 };
 
 // --- Data ---
-const contentTypes = [
-    { icon: FileText, title: "SEO Blog Posts", desc: "Data-driven, long-form articles that answer search intent and drive organic traffic." },
-    { icon: BookOpen, title: "Pillar Pages & Guides", desc: "Comprehensive, authoritative resources that establish your site as an industry hub." },
-    { icon: Target, title: "Website & Landing Page Copy", desc: "High-converting, keyword-optimized copy that turns visitors into customers." },
-    { icon: ShoppingCart, title: "E-Commerce Product Descriptions", desc: "Persuasive, SEO-friendly descriptions that rank and sell simultaneously." },
+const bookTypes = [
+    { icon: BarChart3, title: "Business & Leadership", desc: "Establishing industry authority and sharing frameworks that drive real results." },
+    { icon: Lightbulb, title: "Self-Help & Personal Growth", desc: "Transformative methodologies that inspire action and change lives." },
+    { icon: Brain, title: "Science & Psychology", desc: "Making complex research accessible, engaging, and practically applicable." },
+    { icon: Heart, title: "Health & Wellness", desc: "Evidence-based guidance for better living, written with empathy and clarity." },
+];
+
+const authoritySteps = [
+    { step: "01", title: "Extract Expertise", desc: "We interview you to pull out the golden nuggets that only years of experience can teach.", icon: Brain },
+    { step: "02", title: "Structure the Framework", desc: "Organizing your knowledge into a logical, step-by-step methodology that readers can follow.", icon: Target },
+    { step: "03", title: "Draft with Proof", desc: "Backing every claim with case studies, data, and real-world examples to build unshakeable trust.", icon: Search },
+    { step: "04", title: "Actionable Polish", desc: "Ensuring every chapter ends with clear takeaways. A book that gets highlighted and shared.", icon: TrendingUp },
 ];
 
 const processSteps = [
-    { step: "01", title: "Search Intent Research", desc: "We analyze what your audience is actually searching for and the type of content Google rewards.", icon: Search },
-    { step: "02", title: "Keyword Mapping", desc: "Identifying high-volume, low-difficulty keywords and mapping them to your content strategy.", icon: Target },
-    { step: "03", title: "Expert Writing", desc: "Human writers craft engaging, E-E-A-T compliant content that satisfies both bots and humans.", icon: PenTool },
-    { step: "04", title: "On-Page Optimization", desc: "Optimizing headers, meta tags, internal links, and readability for maximum SERP visibility.", icon: TrendingUp },
+    { step: "01", title: "Idea Validation", desc: "Is there a market for your book? We analyze the competitive landscape and define your unique angle.", icon: Target },
+    { step: "02", title: "Chapter Architecture", desc: "Creating a detailed outline with promises, proofs, and payoffs for every single chapter.", icon: BookOpen },
+    { step: "03", title: "Research & Drafting", desc: "Blending your expertise with our research to write a manuscript that is both engaging and credible.", icon: PenTool },
+    { step: "04", title: "Fact-Check & Refine", desc: "Ensuring 100% accuracy in citations, data, and logic. Your reputation is on the line.", icon: CheckCircle2 },
 ];
 
 const faqs = [
-    { q: "Is SEO content just about stuffing keywords?", a: "Absolutely not. Keyword stuffing can get your site penalized by Google. Modern SEO content is about satisfying 'Search Intent'—giving the reader exactly what they are looking for in an engaging, well-structured format, while naturally incorporating keywords." },
-    { q: "Do you use AI to write your SEO content?", a: "We use AI as a research and outlining tool, but all final writing is 100% human. Google's Helpful Content Update prioritizes human experience (E-E-A-T). AI-generated content often lacks the nuance and depth required to rank for competitive terms." },
-    { q: "How long does it take for SEO content to rank?", a: "SEO is a long-term strategy. While some low-competition keywords can rank within weeks, competitive terms typically take 3-6 months to see significant movement. We focus on quick wins while building long-term authority." },
-    { q: "What is E-E-A-T and why does it matter?", a: "E-E-A-T stands for Experience, Expertise, Authoritativeness, and Trustworthiness. It's Google's framework for evaluating content quality. Our writers ensure every piece of content demonstrates genuine expertise to pass Google's quality rater guidelines." },
-    { q: "Can you write content for my specific niche?", a: "Yes. We have a vast network of specialist writers across industries—from legal and SaaS to health and finance. We match your project with a writer who has actual industry experience." },
+    { q: "Do I need to be a well-known expert to write a non-fiction book?", a: "Not at all. A book builds your authority; you don't need the authority first. If you have a proven framework, unique experience, or a solution to a specific problem, you have a book. We help you position it to establish you as the expert." },
+    { q: "What makes a non-fiction book successful?", a: "Clarity and transformation. Readers don't buy non-fiction for beautiful prose—they buy it to solve a problem or achieve a goal. The most successful non-fiction books offer a clear promise and deliver a step-by-step path to get there." },
+    { q: "How do you organize a book when I have so many ideas?", a: "This is where our 'Chapter Architecture' shines. We use a 'Promise -> Proof -> Payoff' framework. We organize your ideas so they build logically, ensuring the reader never feels overwhelmed and always knows what action to take next." },
+    { q: "Do I need to do all the research myself?", a: "No. While your personal experience is the core of the book, our team of researchers can fill in the gaps—finding statistics, case studies, historical context, and scientific backing to make your arguments bulletproof." },
+    { q: "How is non-fiction writing different from memoir writing?", a: "A memoir is story-driven—it’s about what happened to you. Non-fiction is strategy-driven—it’s about what the reader can do for themselves. While we use stories in non-fiction, they are strictly in service of teaching a lesson or proving a point." },
 ];
 
-export default function SEOContentWritingPage() {
+export default function NonFictionWritingPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
     const overviewRef = useRef<HTMLDivElement>(null);
     const overviewInView = useInView(overviewRef, { once: true, margin: "-100px" });
@@ -58,28 +65,28 @@ export default function SEOContentWritingPage() {
         <main className="w-full overflow-hidden" style={{ fontFamily: "'Raleway', Arial, sans-serif" }}>
 
             {/* ════════════════════════════════════════════
-                SECTION 1: CINEMATIC SEO HERO
+                SECTION 1: CINEMATIC NON-FICTION HERO
             ════════════════════════════════════════════ */}
             <section className="relative w-full min-h-screen flex items-center justify-center bg-[#05070f] overflow-hidden pt-28 pb-12">
                 <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: `url('/images/Left-Section_bg.webp')`, backgroundSize: "40px 40px" }} />
-                <div className="absolute top-1/3 right-1/4 w-[900px] h-[600px] bg-[#e8391d] opacity-10 rounded-full blur-[180px] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#e8391d] opacity-10 rounded-full blur-[200px] pointer-events-none" />
 
                 <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="flex items-center justify-center gap-3 mb-6">
-                        <TrendingUp size={16} className="text-[#e8391d]" />
-                        <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">SEO Content Writing</span>
+                        <BarChart3 size={16} className="text-[#e8391d]" />
+                        <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Non-Fiction Writing Services</span>
                     </motion.div>
 
                     <motion.h1 variants={maskReveal} initial="hidden" animate="visible" className="font-black text-white uppercase leading-[0.95] mb-8" style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}>
-                        RANK HIGHER. <br /><span className="text-[#e8391d]">SELL MORE.</span>
+                        TURN EXPERTISE <br /><span className="text-[#e8391d]">INTO IMPACT.</span>
                     </motion.h1>
 
                     <motion.p variants={fadeUp} initial="hidden" animate="visible" className="text-white/60 leading-[1.85] max-w-2xl mx-auto mb-10" style={{ fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)" }}>
-                        Stop writing for robots. We craft human-first, search-optimized content that satisfies Google’s algorithms and turns your organic traffic into paying customers.
+                        Don't just share your knowledge—structure it into a compelling, authoritative book that changes lives and establishes you as the go-to expert in your industry.
                     </motion.p>
 
                     <motion.div variants={fadeUp} initial="hidden" animate="visible" className="flex flex-wrap justify-center gap-4">
-                        <motion.a href="#overview" whileHover={{ backgroundColor: "#b45309", gap: "14px", boxShadow: "0 10px 40px rgba(217, 119, 6, 0.4)" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 bg-[#e8391d] text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] cursor-pointer transition-all">
+                        <motion.a href="#overview" whileHover={{ backgroundColor: "#065f46", gap: "14px", boxShadow: "0 10px 40px rgba(4, 120, 87, 0.4)" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 bg-[#e8391d] text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] cursor-pointer transition-all">
                             Learn More <ArrowRight size={16} />
                         </motion.a>
                         <motion.a href="/contact" whileHover={{ borderColor: "#e8391d", color: "#e8391d" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-8 py-4 rounded-xl text-[12px] cursor-pointer transition-all">
@@ -99,22 +106,22 @@ export default function SEOContentWritingPage() {
                     <motion.div variants={staggerContainer} initial="hidden" animate={overviewInView ? "visible" : "hidden"} className="flex flex-col">
                         <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4">
                             <span className="w-8 h-[2px] bg-[#e8391d]" />
-                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Human-First, Algorithm-Friendly</span>
+                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Thought Leadership</span>
                         </motion.div>
 
                         <motion.h2 variants={fadeUp} className="font-black text-black uppercase leading-[1.05] mb-6" style={{ fontSize: "clamp(2rem, 3.8vw, 3.2rem)" }}>
-                            CONTENT THAT RANKS, <span className="text-[#e8391d]">COPY THAT CONVERTS.</span>
+                            SMART PEOPLE NEED <span className="text-[#e8391d]">STRUCTURE, NOT FLUFF.</span>
                         </motion.h2>
 
                         <motion.p variants={fadeUp} className="text-gray-500 leading-[1.85] mb-5" style={{ fontSize: "0.95rem" }}>
-                            Google’s Helpful Content Update changed the game. Thin, keyword-stuffed articles no longer rank. Today, it’s about demonstrating E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) while matching exact search intent.
+                            Having great ideas isn't enough. If your book is a disorganized brain dump, readers will lose trust. Non-fiction demands logical flow, rigorous research, and actionable clarity.
                         </motion.p>
                         <motion.p variants={fadeUp} className="text-gray-500 leading-[1.85] mb-8" style={{ fontSize: "0.95rem" }}>
-                            Our SEO writers don’t just write for search bots—they write compelling, well-researched content for humans, strategically optimized to signal relevance to Google without sacrificing readability.
+                            We don’t just write what you tell us—we help you extract your deepest expertise, organize it into a powerful framework, and back it with case studies and proof. The result? A book that makes readers highlight every page and share it with their teams.
                         </motion.p>
 
                         <motion.div variants={staggerContainer} className="flex flex-col gap-4">
-                            {["100% Human-Written (E-E-A.T Compliant)", "Search Intent Focused Strategy", "On-Page SEO & Internal Linking Included", "Conversion-Driven Formatting"].map((item) => (
+                            {["Structured Framework Architecture", "Research & Case Study Integration", "Fact-Checking & Citation Accuracy", "Actionable 'Takeaway' Formatting"].map((item) => (
                                 <motion.div key={item} variants={fadeUp} className="flex items-center gap-3 group">
                                     <CheckCircle2 size={18} className="text-[#e8391d] shrink-0" />
                                     <span className="text-black/80 font-semibold text-[14px]">{item}</span>
@@ -125,7 +132,7 @@ export default function SEOContentWritingPage() {
 
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={overviewInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.8, ease: smoothEase }} className="relative hidden lg:block">
                         <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/20" style={{ aspectRatio: "4/5" }}>
-                            <Image src="/images/seo-content-overview.webp" alt="SEO Content Writing Service" fill className="object-cover" />
+                            <Image src="/images/nonfiction-writing-overview.webp" alt="Non-Fiction Writing Service" fill className="object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                         </div>
                         <div className="absolute -bottom-5 -left-5 w-full h-full rounded-3xl border-[3px] border-[#e8391d]/20 -z-10" />
@@ -134,31 +141,72 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 3: TYPES OF SEO CONTENT
+                SECTION 3: UNIQUE - THE AUTHORITY BLUEPRINT
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#05070f] py-32 overflow-hidden">
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `radial-gradient(#fff 1px, transparent 1px)`, backgroundSize: "30px 30px" }} />
 
-                <div className="max-w-[1200px] mx-auto px-8 lg:px-16 relative z-10">
-                    <div className="text-center mb-16 overflow-hidden">
+                <div className="max-w-[1100px] mx-auto px-8 lg:px-16 relative z-10">
+                    <div className="text-center mb-20 overflow-hidden">
                         <motion.div initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} className="flex items-center justify-center gap-3 mb-4">
-                            <BarChart3 size={16} className="text-[#e8391d]" />
-                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Content Types</span>
+                            <TrendingUp size={16} className="text-[#e8391d]" />
+                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">The Blueprint</span>
                         </motion.div>
                         <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-white uppercase leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-                            CONTENT THAT <span className="text-[#e8391d]">DRIVES TRAFFIC</span>
+                            BUILDING <span className="text-[#e8391d]">AUTHORITY</span>
+                        </motion.h2>
+                        <p className="text-white/40 max-w-lg mx-auto mt-4 text-[14px] leading-relaxed">How we turn raw expertise into an unshakeable thought leadership book.</p>
+                    </div>
+
+                    {/* Blueprint Steps with Connecting Lines */}
+                    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col gap-0 relative">
+
+                        {authoritySteps.map(({ step, title, desc, icon: Icon }, i) => (
+                            <motion.div key={step} variants={fadeUp} className="relative flex items-start gap-8 pb-12 last:pb-0">
+                                {/* Left Node & Line */}
+                                <div className="relative flex flex-col items-center shrink-0">
+                                    <div className="w-14 h-14 rounded-full bg-[#e8391d] flex items-center justify-center shadow-lg shadow-[#e8391d]/30 border-4 border-[#05070f] z-10">
+                                        <Icon size={22} className="text-white" />
+                                    </div>
+                                    {/* Vertical connecting line */}
+                                    {i < authoritySteps.length - 1 && (
+                                        <div className="absolute top-14 bottom-0 w-[2px] bg-white/10" />
+                                    )}
+                                </div>
+
+                                {/* Right Content */}
+                                <div className="pt-2 pb-6">
+                                    <span className="text-[#e8391d] font-black text-sm tracking-widest mb-1 block">{step}</span>
+                                    <h3 className="font-black text-white uppercase text-xl mb-2 tracking-wide">{title}</h3>
+                                    <p className="text-white/50 text-[14px] leading-relaxed max-w-md">{desc}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* ════════════════════════════════════════════
+                SECTION 4: NON-FICTION CATEGORIES
+            ════════════════════════════════════════════ */}
+            <section className="relative w-full bg-[#faf9f7] py-32 overflow-hidden">
+                <div className="max-w-[1200px] mx-auto px-8 lg:px-16">
+                    <div className="text-center mb-16 overflow-hidden">
+                        <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-black uppercase leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+                            GENRES WE <span className="text-[#e8391d]">STRUCTURE</span>
                         </motion.h2>
                     </div>
 
                     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {contentTypes.map(({ icon: Icon, title, desc }) => (
-                            <motion.div key={title} variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:border-[#e8391d]/50 transition-all duration-500 group cursor-default flex gap-6 items-start">
+                        {bookTypes.map(({ icon: Icon, title, desc }) => (
+                            <motion.div key={title} variants={fadeUp} className="bg-white border border-gray-200 rounded-2xl p-8 hover:border-[#e8391d]/50 hover:shadow-xl transition-all duration-500 group cursor-default flex gap-6 items-start">
                                 <div className="w-14 h-14 rounded-xl bg-[#e8391d]/10 flex items-center justify-center shrink-0 group-hover:bg-[#e8391d] transition-colors duration-300">
                                     <Icon size={26} className="text-[#e8391d] group-hover:text-white transition-colors duration-300" />
                                 </div>
                                 <div>
-                                    <h3 className="font-black text-white uppercase text-lg mb-2 tracking-wide">{title}</h3>
-                                    <p className="text-white/50 text-[14px] leading-relaxed">{desc}</p>
+                                    <h3 className="font-black text-black uppercase text-lg mb-2 tracking-wide">{title}</h3>
+                                    <p className="text-gray-500 text-[14px] leading-relaxed">{desc}</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -167,41 +215,13 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 4: THE SEO WRITING PROCESS
-            ════════════════════════════════════════════ */}
-            <section className="relative w-full bg-[#faf9f7] py-32 overflow-hidden">
-                <div className="max-w-[1200px] mx-auto px-8 lg:px-16">
-                    <div className="text-center mb-20">
-                        <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-black uppercase leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-                            OUR SEO <span className="text-[#e8391d]">PROCESS</span>
-                        </motion.h2>
-                    </div>
-
-                    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-                        <div className="hidden lg:block absolute top-8 left-[12%] right-[12%] h-[2px] bg-gray-200 z-0" />
-
-                        {processSteps.map(({ step, title, desc, icon: Icon }) => (
-                            <motion.div key={step} variants={fadeUp} className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-16 h-16 rounded-full bg-[#e8391d] flex items-center justify-center mb-6 shadow-lg shadow-[#e8391d]/20 border-4 border-[#faf9f7]">
-                                    <Icon size={24} className="text-white" />
-                                </div>
-                                <span className="text-[#e8391d] font-black text-sm tracking-widest mb-2">{step}</span>
-                                <h3 className="font-black text-black uppercase text-lg mb-3 tracking-wide">{title}</h3>
-                                <p className="text-gray-500 text-[14px] leading-relaxed max-w-[250px]">{desc}</p>
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* ════════════════════════════════════════════
-                SECTION 5: WHY CHOOSE OUR SEO WRITERS
+                SECTION 5: THE WRITING PROCESS
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#111] py-32 overflow-hidden">
                 <div className="max-w-[1200px] mx-auto px-8 lg:px-16 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                     <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
                         <div className="rounded-3xl overflow-hidden shadow-2xl" style={{ aspectRatio: "1/1" }}>
-                            <Image src="/images/seo-team.webp" alt="SEO Content Team" fill className="object-cover" />
+                            <Image src="/images/nonfiction-team.webp" alt="Non-Fiction Researchers" fill className="object-cover" />
                             <div className="absolute inset-0 bg-[#e8391d]/20 mix-blend-multiply" />
                         </div>
                         <div className="absolute -bottom-5 -right-5 w-full h-full rounded-3xl border-[3px] border-[#e8391d]/25 -z-0" />
@@ -210,26 +230,27 @@ export default function SEOContentWritingPage() {
                     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
                         <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4">
                             <span className="w-8 h-[2px] bg-[#e8391d]" />
-                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Why Bexley?</span>
+                            <span className="text-[#e8391d] font-black uppercase tracking-[0.28em] text-[11px]">Our Process</span>
                         </motion.div>
 
-                        <motion.h2 variants={fadeUp} className="font-black text-white uppercase leading-[1.05] mb-10" style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}>
-                            WRITERS WHO <br /><span className="text-[#e8391d]">UNDERSTAND THE ALGORITHM.</span>
+                        <motion.h2 variants={fadeUp} className="font-black text-white uppercase leading-[1.05] mb-6" style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}>
+                            FROM IDEA TO <br /><span className="text-[#e8391d]">INDUSTRY STANDARD.</span>
                         </motion.h2>
 
-                        <motion.div variants={staggerContainer} className="flex flex-col gap-5">
-                            {[
-                                "100% Human-Written — We never use AI to generate final drafts.",
-                                "E-E-A.T Focused — Content that passes Google's quality rater tests.",
-                                "Search Intent Masters — We write what people actually want to read.",
-                                "Conversion-Driven — Traffic is useless without conversions. We optimize for both.",
-                                "Industry Specialists — Niche writers who know your subject matter."
-                            ].map((item) => (
-                                <motion.div key={item} variants={fadeUp} className="flex items-start gap-4 group">
-                                    <div className="mt-1 w-6 h-6 rounded-full bg-[#e8391d]/10 flex items-center justify-center shrink-0 group-hover:bg-[#e8391d] transition-colors duration-300">
-                                        <CheckCircle2 size={14} className="text-[#e8391d] group-hover:text-white transition-colors" />
+                        <motion.p variants={fadeUp} className="text-white/60 leading-[1.85] mb-10" style={{ fontSize: "0.95rem" }}>
+                            A non-fiction book is only as credible as its structure and research. We ensure every claim is backed, and every chapter delivers value.
+                        </motion.p>
+
+                        <motion.div variants={staggerContainer} className="flex flex-col gap-8">
+                            {processSteps.map(({ step, title, desc, icon: Icon }) => (
+                                <motion.div key={step} variants={fadeUp} className="flex gap-5 items-start group">
+                                    <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-[#e8391d] group-hover:border-[#e8391d] transition-colors duration-300">
+                                        <Icon size={20} className="text-white/60 group-hover:text-white transition-colors duration-300" />
                                     </div>
-                                    <p className="text-white/60 text-[15px] leading-relaxed">{item}</p>
+                                    <div>
+                                        <h4 className="font-black text-white uppercase tracking-wider mb-1">{step} — {title}</h4>
+                                        <p className="text-white/40 text-[13px] leading-relaxed">{desc}</p>
+                                    </div>
                                 </motion.div>
                             ))}
                         </motion.div>
@@ -238,13 +259,39 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 6: SERVICE FAQS
+                SECTION 6: WHY CHOOSE OUR STRATEGISTS
+            ════════════════════════════════════════════ */}
+            <section className="relative w-full bg-[#05070f] py-32 overflow-hidden">
+                <div className="max-w-[1200px] mx-auto px-8 lg:px-16 relative z-10">
+                    <div className="text-center mb-16">
+                        <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-white uppercase leading-none" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+                            WHY CHOOSE <span className="text-[#e8391d]">BEXLEY?</span>
+                        </motion.h2>
+                    </div>
+
+                    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[
+                            { title: "Framework Builders", desc: "We don’t just write; we architect methodologies that position you as a thought leader." },
+                            { title: "Rigorous Fact-Checkers", desc: "Your reputation is everything. We verify every claim, stat, and citation before publication." },
+                            { title: "Action-Driven Writing", desc: "Readers buy non-fiction to solve problems. We ensure every chapter delivers clear, actionable takeaways." },
+                        ].map(({ title, desc }) => (
+                            <motion.div key={title} variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 text-center hover:border-[#e8391d]/50 transition-colors duration-500">
+                                <h3 className="font-black text-white uppercase text-lg mb-3 tracking-wide">{title}</h3>
+                                <p className="text-white/50 text-[14px] leading-relaxed">{desc}</p>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* ════════════════════════════════════════════
+                SECTION 7: SERVICE FAQS
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#faf9f7] py-32 overflow-hidden">
                 <div className="max-w-[900px] mx-auto px-8 relative z-10">
                     <div className="text-center mb-16">
                         <motion.h2 variants={maskReveal} initial="hidden" whileInView="visible" viewport={{ once: true }} className="font-black text-black uppercase leading-none" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-                            SEO CONTENT <span className="text-[#e8391d]">FAQS</span>
+                            NON-FICTION WRITING <span className="text-[#e8391d]">FAQS</span>
                         </motion.h2>
                     </div>
 
@@ -273,21 +320,21 @@ export default function SEOContentWritingPage() {
             </section>
 
             {/* ════════════════════════════════════════════
-                SECTION 7: MASSIVE CTA
+                SECTION 8: MASSIVE CTA
             ════════════════════════════════════════════ */}
             <section className="relative w-full bg-[#e8391d] py-28 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `url('/images/Left-Section_bg.webp')`, backgroundSize: "40px 40px" }} />
 
                 <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="max-w-4xl mx-auto text-center px-8 relative z-10">
                     <h2 className="font-black text-white uppercase leading-tight mb-6" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-                        DOMINATE THE SEARCH RESULTS.
+                        YOUR EXPERTISE DESERVES A BIGGER STAGE.
                     </h2>
                     <p className="text-white/80 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-                        Stop losing customers to competitors with worse products but better SEO. Let's fix that today.
+                        Stop leaving money and impact on the table. Let’s write the book that cements you as the authority in your industry.
                     </p>
                     <div className="flex flex-wrap justify-center gap-5">
                         <motion.a href="/contact" whileHover={{ backgroundColor: "#fff", color: "#e8391d", gap: "14px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 bg-black text-white font-black uppercase tracking-widest px-10 py-5 rounded-xl text-[14px] cursor-pointer transition-all duration-300">
-                            Get an SEO Strategy <ArrowRight size={18} />
+                            Start Your Book <ArrowRight size={18} />
                         </motion.a>
                         <motion.a href="tel:18884440110" whileHover={{ gap: "14px" }} whileTap={{ scale: 0.95 }} className="inline-flex items-center gap-3 border-2 border-white text-white font-black uppercase tracking-widest px-10 py-5 rounded-xl text-[14px] cursor-pointer transition-all duration-300">
                             <Phone size={16} /> Call Us Now
