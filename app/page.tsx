@@ -19,9 +19,9 @@ export default function Home() {
 
   return (
     <main>
-      <Navbar isDay={isDay} />
+      <Navbar />
 
-      <HeroSection isDay={isDay} onDayChange={setIsDay} />
+      <HeroSection />
 
       <AboutSection />
 
