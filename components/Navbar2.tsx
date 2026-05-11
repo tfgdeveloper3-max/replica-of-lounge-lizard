@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Mail, Menu, ChevronDown, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link"; // Next.js Link for fast routing
+import Link from "next/link";
 
 // ── Services mega-menu data ───────────────────────────────────────────────────
 const servicesMenu = [
@@ -74,11 +74,7 @@ const subVariants = {
 const slugify = (str: string) =>
     str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
-interface NavbarProps {
-    isDay?: boolean;
-}
-
-export default function Navbar2({ isDay = false }: NavbarProps) {
+export default function Navbar2() {
     const [scrolled, setScrolled] = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeService, setActiveService] = useState<string>(servicesMenu[0].label);
@@ -103,11 +99,11 @@ export default function Navbar2({ isDay = false }: NavbarProps) {
         servicesCloseTimer.current = setTimeout(() => setServicesOpen(false), 100);
     };
 
-    // ── Color logic ──
-    const navTextColor = scrolled ? "text-white" : isDay ? "text-black/80" : "text-white";
+    // ── Color logic (Locked to Night/Dark state) ──
+    const navTextColor = scrolled ? "text-white" : "text-white";
     const navHoverColor = scrolled ? "hover:text-black/80" : "hover:text-[#e8391d]";
-    const contactColor = scrolled ? "text-white/90" : isDay ? "text-black/80" : "text-white";
-    const chevronColor = scrolled ? "text-white/60" : isDay ? "text-black/40" : "text-white/40";
+    const contactColor = scrolled ? "text-white/90" : "text-white";
+    const chevronColor = scrolled ? "text-white/60" : "text-white/40";
 
     const activeLinks = servicesMenu.find((s) => s.label === activeService)?.links ?? [];
 
@@ -280,7 +276,7 @@ export default function Navbar2({ isDay = false }: NavbarProps) {
 
                 {/* Mobile hamburger */}
                 <button
-                    className={`lg:hidden p-2 transition-colors ${scrolled || !isDay ? "text-white" : "text-black"}`}
+                    className="lg:hidden p-2 transition-colors text-white"
                     onClick={() => setMobileOpen((v) => !v)}
                 >
                     {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -302,7 +298,6 @@ export default function Navbar2({ isDay = false }: NavbarProps) {
                                 if (item.label === "Services") {
                                     return (
                                         <li key="Services">
-                                            {/* Split Mobile Layout: Link on left, Toggle on right */}
                                             <div className="flex items-center border-b border-white/5">
                                                 <Link
                                                     href="/services"
@@ -349,7 +344,7 @@ export default function Navbar2({ isDay = false }: NavbarProps) {
                                                                             {srv.links.map((link) => (
                                                                                 <li key={link}>
                                                                                     <Link
-                                                                                        href={`/services/${slugify(link)}`}
+                                                                                        href={`/InnerServices/${slugify(link)}`}
                                                                                         className="block px-3 py-2 text-[12px] text-white/50 hover:text-[#e8391d] transition-colors"
                                                                                         style={{ fontFamily: "'Raleway', Arial, sans-serif" }}
                                                                                         onClick={() => setMobileOpen(false)}
